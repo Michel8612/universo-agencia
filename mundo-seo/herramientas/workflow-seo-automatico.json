@@ -1,0 +1,156 @@
+﻿{
+    "name":  "SEO â€” Generador de Articulos Automatico",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "weeks",
+                                                                           "weeksInterval":  1
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "name":  "Cada semana (lunes 9am)",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "position":  [
+                                       240,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "// Keywords por nicho â€” rotar semanalmente\nconst keywords = [\n  { keyword: \u0027chatbot para restaurantes\u0027, nicho: \u0027hosteleria\u0027 },\n  { keyword: \u0027automatizacion para clinicas\u0027, nicho: \u0027salud\u0027 },\n  { keyword: \u0027ia para despachos de abogados\u0027, nicho: \u0027legal\u0027 },\n  { keyword: \u0027chatbot ecommerce\u0027, nicho: \u0027ecommerce\u0027 },\n  { keyword: \u0027automatizacion pymes espana\u0027, nicho: \u0027general\u0027 },\n  { keyword: \u0027agencia ia para empresas\u0027, nicho: \u0027general\u0027 },\n  { keyword: \u0027chatbot atencion al cliente\u0027, nicho: \u0027general\u0027 },\n  { keyword: \u0027inteligencia artificial para hoteles\u0027, nicho: \u0027hosteleria\u0027 },\n];\n\nconst semana = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % keywords.length;\nreturn [{ json: keywords[semana] }];"
+                                     },
+                      "name":  "Seleccionar keyword de la semana",
+                      "type":  "n8n-nodes-base.code",
+                      "position":  [
+                                       460,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "url":  "http://localhost:11434/api/generate",
+                                         "method":  "POST",
+                                         "sendBody":  true,
+                                         "contentType":  "json",
+                                         "body":  "={{ JSON.stringify({ model: \u0027qwen2.5-coder:7b\u0027, prompt: \u0027Escribe un articulo SEO de 1200 palabras sobre: \u0027 + $json.keyword + \u0027. Nicho: \u0027 + $json.nicho + \u0027. Incluye H2s, casos de exito y CTA final para consulta gratuita.\u0027, stream: false }) }}"
+                                     },
+                      "name":  "Generar articulo con Ollama (GRATIS)",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "position":  [
+                                       680,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const articulo = JSON.parse($input.item.json.data || \u0027{}\u0027);\nconst keyword = $(\u0027Seleccionar keyword de la semana\u0027).item.json.keyword;\nconst fecha = new Date().toISOString().split(\u0027T\u0027)[0];\nconst slug = keyword.toLowerCase().replace(/[^a-z0-9]+/g, \u0027-\u0027);\n\nreturn [{\n  json: {\n    titulo: `Guia completa: ${keyword} en 2026`,\n    contenido: articulo.response || \u0027Error generando contenido\u0027,\n    slug: slug,\n    fecha: fecha,\n    meta_description: `Todo sobre ${keyword}. Guia practica para empresas en Espana. Consulta gratuita disponible.`.slice(0, 160),\n    keyword: keyword\n  }\n}];"
+                                     },
+                      "name":  "Preparar articulo",
+                      "type":  "n8n-nodes-base.code",
+                      "position":  [
+                                       900,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "appendOrUpdate",
+                                         "documentId":  {
+                                                            "value":  "PONER_ID_GOOGLE_SHEET_AQUI"
+                                                        },
+                                         "sheetName":  {
+                                                           "value":  "Articulos"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "fecha":  "={{ $json.fecha }}",
+                                                                       "keyword":  "={{ $json.keyword }}",
+                                                                       "titulo":  "={{ $json.titulo }}",
+                                                                       "slug":  "={{ $json.slug }}",
+                                                                       "estado":  "borrador"
+                                                                   }
+                                                     }
+                                     },
+                      "name":  "Registrar en Google Sheets",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "position":  [
+                                       1120,
+                                       200
+                                   ],
+                      "notes":  "Conectar tu Google Sheets para tracking de articulos"
+                  },
+                  {
+                      "parameters":  {
+                                         "channel":  "#seo-agencia",
+                                         "text":  "=Nuevo articulo SEO generado!\n*Keyword:* {{ $json.keyword }}\n*Titulo:* {{ $json.titulo }}\n*Fecha:* {{ $json.fecha }}\n\nRevisar en: D:\\Proyectos claude\\mundo-seo\\articulos-generados\\"
+                                     },
+                      "name":  "Notificar en Slack",
+                      "type":  "n8n-nodes-base.slack",
+                      "position":  [
+                                       1120,
+                                       420
+                                   ],
+                      "notes":  "Conectar Slack para recibir notificacion cuando sale un articulo"
+                  }
+              ],
+    "connections":  {
+                        "Cada semana (lunes 9am)":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Seleccionar keyword de la semana",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    },
+                        "Seleccionar keyword de la semana":  {
+                                                                 "main":  [
+                                                                              [
+                                                                                  {
+                                                                                      "node":  "Generar articulo con Ollama (GRATIS)",
+                                                                                      "type":  "main",
+                                                                                      "index":  0
+                                                                                  }
+                                                                              ]
+                                                                          ]
+                                                             },
+                        "Generar articulo con Ollama (GRATIS)":  {
+                                                                     "main":  [
+                                                                                  [
+                                                                                      {
+                                                                                          "node":  "Preparar articulo",
+                                                                                          "type":  "main",
+                                                                                          "index":  0
+                                                                                      }
+                                                                                  ]
+                                                                              ]
+                                                                 },
+                        "Preparar articulo":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Registrar en Google Sheets",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   },
+                                                                   {
+                                                                       "node":  "Notificar en Slack",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "id":  "2"
+}

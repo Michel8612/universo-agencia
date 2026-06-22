@@ -1,0 +1,148 @@
+[FAST MODE] scale=0.5, skip=2, det=320 — estimado ~4x más rápido
+[OK] inswapper model found: C:\Users\Romer\.insightface\models\inswapper_128.onnx
+Loading face analysis models (buffalo_l, det_size=320)...
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: C:\Users\Romer\.insightface\models\buffalo_l\1k3d68.onnx landmark_3d_68 ['None', 3, 192, 192] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: C:\Users\Romer\.insightface\models\buffalo_l\2d106det.onnx landmark_2d_106 ['None', 3, 192, 192] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: C:\Users\Romer\.insightface\models\buffalo_l\det_10g.onnx detection [1, 3, '?', '?'] 127.5 128.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: C:\Users\Romer\.insightface\models\buffalo_l\genderage.onnx genderage ['None', 3, 96, 96] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: C:\Users\Romer\.insightface\models\buffalo_l\w600k_r50.onnx recognition ['None', 3, 112, 112] 127.5 127.5
+set det-size: (320, 320)
+[OK] buffalo_l loaded
+Loading inswapper model...
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+inswapper-shape: [1, 3, 128, 128]
+[OK] inswapper loaded
+
+Extracting source faces from reference photos...
+[OK] Left face bbox: [ 43  66 156 222]
+[OK] Right face bbox: [ 42  44 152 197]
+
+=======================================================
+VIDEO 1: D:\Proyectos claude\mundo-multimedia\proyectos\face-swap\video1_trigueño_abuelo.mp4
+=======================================================
+
+Processing 2810 frames @ 25fps — salida 360x640 (scale=0.5, skip=2)
+Frames a procesar: 1405 (ETA estimada: 94-140 min)
+
+  frame 25/2810  |  0.80 fps  |  ETA 57.8 min
+  frame 50/2810  |  0.85 fps  |  ETA 54.4 min
+  frame 75/2810  |  0.85 fps  |  ETA 53.8 min
+  frame 100/2810  |  0.86 fps  |  ETA 52.4 min
+  frame 125/2810  |  0.85 fps  |  ETA 52.6 min
+  frame 150/2810  |  0.86 fps  |  ETA 51.4 min
+  frame 175/2810  |  0.86 fps  |  ETA 50.9 min
+  frame 200/2810  |  0.86 fps  |  ETA 50.4 min
+  frame 225/2810  |  0.85 fps  |  ETA 50.5 min
+  frame 250/2810  |  0.86 fps  |  ETA 49.5 min
+  frame 275/2810  |  0.86 fps  |  ETA 48.9 min
+  frame 300/2810  |  0.87 fps  |  ETA 48.0 min
+  frame 325/2810  |  0.87 fps  |  ETA 47.4 min
+  frame 350/2810  |  0.88 fps  |  ETA 46.6 min
+  frame 375/2810  |  0.88 fps  |  ETA 46.1 min
+  frame 400/2810  |  0.89 fps  |  ETA 45.3 min
+  frame 425/2810  |  0.89 fps  |  ETA 44.9 min
+  frame 450/2810  |  0.89 fps  |  ETA 44.2 min
+  frame 475/2810  |  0.89 fps  |  ETA 43.6 min
+  frame 500/2810  |  0.90 fps  |  ETA 43.0 min
+  frame 525/2810  |  0.90 fps  |  ETA 42.5 min
+  frame 550/2810  |  0.90 fps  |  ETA 41.8 min
+  frame 575/2810  |  0.90 fps  |  ETA 41.3 min
+  frame 600/2810  |  0.90 fps  |  ETA 40.9 min
+  frame 625/2810  |  0.90 fps  |  ETA 40.6 min
+  frame 650/2810  |  0.90 fps  |  ETA 40.1 min
+  frame 675/2810  |  0.89 fps  |  ETA 39.8 min
+  frame 700/2810  |  0.89 fps  |  ETA 39.3 min
+  frame 725/2810  |  0.89 fps  |  ETA 38.9 min
+  frame 750/2810  |  0.89 fps  |  ETA 38.4 min
+  frame 775/2810  |  0.89 fps  |  ETA 38.0 min
+  frame 800/2810  |  0.89 fps  |  ETA 37.6 min
+  frame 825/2810  |  0.89 fps  |  ETA 37.2 min
+  frame 850/2810  |  0.89 fps  |  ETA 36.8 min
+  frame 875/2810  |  0.89 fps  |  ETA 36.3 min
+  frame 900/2810  |  0.89 fps  |  ETA 35.6 min
+  frame 925/2810  |  0.89 fps  |  ETA 35.2 min
+  frame 950/2810  |  0.89 fps  |  ETA 34.8 min
+  frame 975/2810  |  0.89 fps  |  ETA 34.4 min
+  frame 1000/2810  |  0.89 fps  |  ETA 33.9 min
+  frame 1025/2810  |  0.89 fps  |  ETA 33.5 min
+  frame 1050/2810  |  0.89 fps  |  ETA 32.8 min
+  frame 1075/2810  |  0.90 fps  |  ETA 32.0 min
+  frame 1100/2810  |  0.91 fps  |  ETA 31.2 min
+  frame 1125/2810  |  0.92 fps  |  ETA 30.4 min
+  frame 1150/2810  |  0.92 fps  |  ETA 30.0 min
+  frame 1175/2810  |  0.92 fps  |  ETA 29.6 min
+  frame 1200/2810  |  0.92 fps  |  ETA 29.2 min
+  frame 1225/2810  |  0.92 fps  |  ETA 28.8 min
+  frame 1250/2810  |  0.92 fps  |  ETA 28.4 min
+  frame 1275/2810  |  0.91 fps  |  ETA 28.0 min
+  frame 1300/2810  |  0.91 fps  |  ETA 27.6 min
+  frame 1325/2810  |  0.91 fps  |  ETA 27.2 min
+  frame 1350/2810  |  0.91 fps  |  ETA 26.7 min
+  frame 1375/2810  |  0.91 fps  |  ETA 26.3 min
+  frame 1400/2810  |  0.91 fps  |  ETA 25.9 min
+  frame 1425/2810  |  0.91 fps  |  ETA 25.5 min
+  frame 1450/2810  |  0.91 fps  |  ETA 25.0 min
+  frame 1475/2810  |  0.90 fps  |  ETA 24.6 min
+  frame 1500/2810  |  0.90 fps  |  ETA 24.2 min
+  frame 1525/2810  |  0.90 fps  |  ETA 23.7 min
+  frame 1550/2810  |  0.90 fps  |  ETA 23.3 min
+  frame 1575/2810  |  0.90 fps  |  ETA 22.9 min
+  frame 1600/2810  |  0.90 fps  |  ETA 22.4 min
+  frame 1625/2810  |  0.90 fps  |  ETA 22.0 min
+  frame 1650/2810  |  0.90 fps  |  ETA 21.5 min
+  frame 1675/2810  |  0.90 fps  |  ETA 21.1 min
+  frame 1700/2810  |  0.90 fps  |  ETA 20.6 min
+  frame 1725/2810  |  0.90 fps  |  ETA 20.2 min
+  frame 1750/2810  |  0.90 fps  |  ETA 19.7 min
+  frame 1775/2810  |  0.89 fps  |  ETA 19.3 min
+  frame 1800/2810  |  0.89 fps  |  ETA 18.8 min
+  frame 1825/2810  |  0.90 fps  |  ETA 18.3 min
+  frame 1850/2810  |  0.90 fps  |  ETA 17.7 min
+  frame 1875/2810  |  0.91 fps  |  ETA 17.2 min
+  frame 1900/2810  |  0.91 fps  |  ETA 16.6 min
+  frame 1925/2810  |  0.91 fps  |  ETA 16.2 min
+  frame 1950/2810  |  0.91 fps  |  ETA 15.7 min
+  frame 1975/2810  |  0.91 fps  |  ETA 15.3 min
+  frame 2000/2810  |  0.91 fps  |  ETA 14.8 min
+  frame 2025/2810  |  0.91 fps  |  ETA 14.3 min
+  frame 2050/2810  |  0.91 fps  |  ETA 13.9 min
+  frame 2075/2810  |  0.91 fps  |  ETA 13.4 min
+  frame 2100/2810  |  0.91 fps  |  ETA 13.0 min
+  frame 2125/2810  |  0.91 fps  |  ETA 12.5 min
+  frame 2150/2810  |  0.91 fps  |  ETA 12.1 min
+  frame 2175/2810  |  0.91 fps  |  ETA 11.7 min
+  frame 2200/2810  |  0.91 fps  |  ETA 11.2 min
+  frame 2225/2810  |  0.92 fps  |  ETA 10.6 min
+  frame 2250/2810  |  0.92 fps  |  ETA 10.1 min
+  frame 2275/2810  |  0.92 fps  |  ETA 9.6 min
+  frame 2300/2810  |  0.92 fps  |  ETA 9.2 min
+  frame 2325/2810  |  0.92 fps  |  ETA 8.8 min
+  frame 2350/2810  |  0.92 fps  |  ETA 8.3 min
+  frame 2375/2810  |  0.92 fps  |  ETA 7.9 min
+  frame 2400/2810  |  0.92 fps  |  ETA 7.4 min
+  frame 2425/2810  |  0.92 fps  |  ETA 7.0 min
+  frame 2450/2810  |  0.92 fps  |  ETA 6.5 min
+  frame 2475/2810  |  0.92 fps  |  ETA 6.1 min
+  frame 2500/2810  |  0.92 fps  |  ETA 5.6 min
+  frame 2525/2810  |  0.92 fps  |  ETA 5.2 min
+  frame 2550/2810  |  0.92 fps  |  ETA 4.7 min
+  frame 2575/2810  |  0.93 fps  |  ETA 4.2 min
+  frame 2600/2810  |  0.93 fps  |  ETA 3.8 min
+  frame 2625/2810  |  0.93 fps  |  ETA 3.3 min
+  frame 2650/2810  |  0.93 fps  |  ETA 2.9 min
+  frame 2675/2810  |  0.93 fps  |  ETA 2.4 min
+  frame 2700/2810  |  0.93 fps  |  ETA 2.0 min
+  frame 2725/2810  |  0.93 fps  |  ETA 1.5 min
+  frame 2750/2810  |  0.93 fps  |  ETA 1.1 min
+  frame 2775/2810  |  0.93 fps  |  ETA 0.6 min
+  frame 2800/2810  |  0.93 fps  |  ETA 0.2 min
+
+Convirtiendo a H.264 y mezclando audio original...
+[DONE] D:\Proyectos claude\mundo-multimedia\proyectos\face-swap\video1_trigueño_abuelo.mp4 — 6.9 MB
+
+[NEXIA] Face swap completado.

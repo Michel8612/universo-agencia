@@ -1,0 +1,107 @@
+{
+  "name": "Social Media - Post cada 20 min (Ollama)",
+  "nodes": [
+    {
+      "id": "s1",
+      "name": "Cada 20 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 20
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "s2",
+      "name": "Elegir tema del post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const temas=['automatizacion de negocios con IA','como los chatbots aumentan ventas un 30%','casos de exito reales con inteligencia artificial','ahorra 10 horas semanales con automatizacion','el futuro de las pymes espanolas con IA en 2026','por que tu competencia ya usa chatbots','3 procesos que puedes automatizar esta semana'];const t=temas[Math.floor(Date.now()/1200000)%temas.length];return [{json:{tema:t,hora:new Date().toISOString()}}];"
+      }
+    },
+    {
+      "id": "s3",
+      "name": "Generar post con Ollama GRATIS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\"model\":\"qwen2.5-coder:7b\",\"prompt\":\"Escribe un post de LinkedIn sobre el tema: \"+$json.tema+\". Maximo 500 caracteres. Tono profesional y cercano. Incluye 3 hashtags al final. SOLO el texto del post, sin comentarios extra.\",\"stream\":false}"
+      }
+    },
+    {
+      "id": "s4",
+      "name": "Formatear post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const resp=JSON.parse($input.item.json.data||'{}');const info=$('Elegir tema del post').item.json;return [{json:{tema:info.tema,contenido:resp.response||'Error generando post',hora:info.hora,estado:'listo_para_publicar',caracteres:(resp.response||'').length}}];"
+      }
+    }
+  ],
+  "connections": {
+    "Cada 20 minutos": {
+      "main": [
+        [
+          {
+            "node": "Elegir tema del post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Elegir tema del post": {
+      "main": [
+        [
+          {
+            "node": "Generar post con Ollama GRATIS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar post con Ollama GRATIS": {
+      "main": [
+        [
+          {
+            "node": "Formatear post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "dfde7859-835d-4ce9-9572-d602f0b03f0d"
+}

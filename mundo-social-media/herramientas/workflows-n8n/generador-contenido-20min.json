@@ -1,0 +1,196 @@
+﻿{
+    "name":  "â° Generador y Publicador cada 20 min (Agencia IA)",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "minutes",
+                                                                           "minutesInterval":  20
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "id":  "trigger-20min",
+                      "name":  "Cada 20 Minutos",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       240,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "// Selecciona el cliente/cuenta activa segÃºn hora del dÃ­a\nconst hora = new Date().getHours();\nconst cuentas = $env.CUENTAS_ACTIVAS ? JSON.parse($env.CUENTAS_ACTIVAS) : [{ nombre: \u0027default\u0027, nicho: \u0027negocios digitales\u0027, plataformas: [\u0027instagram\u0027, \u0027twitter\u0027] }];\n// Rota entre cuentas\nconst idx = Math.floor(Date.now() / (20 * 60 * 1000)) % cuentas.length;\nreturn [{ json: { cuenta: cuentas[idx], hora } }];"
+                                     },
+                      "id":  "seleccionar-cuenta",
+                      "name":  "Seleccionar Cuenta Activa",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       460,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://openrouter.ai/api/v1/chat/completions",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpHeaderAuth",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Authorization",
+                                                                                         "value":  "=Bearer {{ $env.OPENROUTER_API_KEY }}"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "HTTP-Referer",
+                                                                                         "value":  "https://agencia-ia.com"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "bodyParameters":  {
+                                                                "parameters":  [
+                                                                                   {
+                                                                                       "name":  "model",
+                                                                                       "value":  "anthropic/claude-sonnet-4-6"
+                                                                                   },
+                                                                                   {
+                                                                                       "name":  "messages",
+                                                                                       "value":  "=[{ \"role\": \"user\", \"content\": \"Genera un post viral para {{ $json.cuenta.plataformas[0] }} sobre el nicho: {{ $json.cuenta.nicho }}. El post debe tener mÃ¡ximo 280 caracteres si es para Twitter, o 2200 si es Instagram. Incluye 5 hashtags relevantes. Solo devuelve el texto del post, sin explicaciones.\" }]"
+                                                                                   }
+                                                                               ]
+                                                            },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "generar-contenido-ia",
+                      "name":  "Generar Contenido con IA",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       680,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const respuesta = $json.choices[0].message.content;\nconst cuenta = $(\u0027Seleccionar Cuenta Activa\u0027).item.json.cuenta;\nreturn [{ json: { content: respuesta, platforms: cuenta.plataformas, account: cuenta.nombre, generated_at: new Date().toISOString() } }];"
+                                     },
+                      "id":  "extraer-contenido",
+                      "name":  "Extraer Contenido",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       900,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=http://localhost:5678/webhook/publish-social",
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify($json) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "publicar-en-redes",
+                      "name":  "Publicar en Redes",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1120,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "// Guarda log de publicaciÃ³n\nconst log = { timestamp: new Date().toISOString(), account: $(\u0027Extraer Contenido\u0027).item.json.account, content_preview: $(\u0027Extraer Contenido\u0027).item.json.content.substring(0, 100), status: \u0027published\u0027 };\nconsole.log(\u0027POST PUBLICADO:\u0027, JSON.stringify(log));\nreturn [{ json: log }];"
+                                     },
+                      "id":  "log-publicacion",
+                      "name":  "Registrar PublicaciÃ³n",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1340,
+                                       300
+                                   ]
+                  }
+              ],
+    "connections":  {
+                        "Cada 20 Minutos":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Seleccionar Cuenta Activa",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Seleccionar Cuenta Activa":  {
+                                                          "main":  [
+                                                                       [
+                                                                           {
+                                                                               "node":  "Generar Contenido con IA",
+                                                                               "type":  "main",
+                                                                               "index":  0
+                                                                           }
+                                                                       ]
+                                                                   ]
+                                                      },
+                        "Generar Contenido con IA":  {
+                                                         "main":  [
+                                                                      [
+                                                                          {
+                                                                              "node":  "Extraer Contenido",
+                                                                              "type":  "main",
+                                                                              "index":  0
+                                                                          }
+                                                                      ]
+                                                                  ]
+                                                     },
+                        "Extraer Contenido":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Publicar en Redes",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Publicar en Redes":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Registrar PublicaciÃ³n",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "tags":  [
+                 "agencia-ia",
+                 "social-media",
+                 "automatizacion",
+                 "20-minutos"
+             ],
+    "id":  "1"
+}

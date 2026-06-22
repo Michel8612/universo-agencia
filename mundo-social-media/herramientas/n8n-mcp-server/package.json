@@ -1,0 +1,8 @@
+{
+  "name": "n8n-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server para conectar Claude Code con n8n",
+  "main": "index.js",
+  "bin": { "n8n-mcp": "./index.js" },
+  "scripts": { "start": "node index.js" }
+}

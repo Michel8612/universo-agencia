@@ -1,0 +1,46 @@
+# Secretos — NUNCA subir a GitHub
+.env
+*.env
+.env.local
+*.key
+*.pem
+secrets/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# VS Code
+.vscode/settings.json
+
+# n8n
+.n8n/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Sesiones locales de Claude
+MEMORIA-SESION.md
+
+# Bases de datos locales
+*.sqlite
+*.db
+
+# Temporales
+tmp/
+temp/
+*.tmp
+*.bak

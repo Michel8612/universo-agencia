@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Romer/Downloads/**)",
+      "Bash(extract-text \"cuestionario Claudia. Historia de Cuba.docx\")",
+      "PowerShell(extract-text \"C:\\\\Users\\\\Romer\\\\Downloads\\\\cuestionario Claudia. Historia de Cuba.docx\")",
+      "PowerShell(pandoc \"C:\\\\Users\\\\Romer\\\\Downloads\\\\cuestionario Claudia. Historia de Cuba.docx\" -o \"$env:TEMP\\\\cuestionario.md\"; Get-Content \"$env:TEMP\\\\cuestionario.md\")",
+      "mcp__3746a614-9853-4865-9126-8ef181fb664b__list_enabled_zapier_actions",
+      "mcp__3746a614-9853-4865-9126-8ef181fb664b__list_zapier_skills",
+      "PowerShell(Start-Process \"C:\\\\Program Files\\\\Microsoft VS Code\\\\Code.exe\" -ArgumentList '\"D:\\\\Proyectos claude\"')",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "PowerShell(Get-Content \"$env:LOCALAPPDATA\\\\Docker\\\\log\\\\vm\\\\init.log\")",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); node --version; npm --version; n8n --version 2>$null; python --version 2>$null; git --version 2>$null; docker --version 2>$null)",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "PowerShell(Get-ChildItem \"$env:USERPROFILE\\\\.ollama\\\\models\\\\blobs\" | Sort-Object LastWriteTime -Descending | Select-Object Name, @{N='GB';E={[math]::Round\\($_.Length/1GB,2\\)}}, LastWriteTime | Select-Object -First 10)",
+      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead\\(\"C:\\\\Users\\\\Romer\\\\Downloads\\\\sistema-alimentos.zip\"\\); $zip.Entries | Select-Object FullName, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}} | Format-Table -AutoSize; $zip.Dispose\\(\\))",
+      "WebFetch(domain:github.com)",
+      "PowerShell(Start-Sleep -Seconds 8; try { $r = Invoke-WebRequest \"http://localhost:5678/healthz\" -TimeoutSec 5 -UseBasicParsing; Write-Host \"n8n UP: $\\($r.StatusCode\\)\" } catch { Write-Host \"Aun arrancando...\" })",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\Romer\\\\Downloads\\\\wsl-update.msi\" -ArgumentList \"/quiet /norestart\" -Wait -Verb RunAs; Write-Host \"WSL instalado\")",
+      "WebFetch(domain:n8n.io)",
+      "WebFetch(domain:api.n8n.io)",
+      "WebSearch",
+      "mcp__bab960a3-7442-4f51-987f-a67b995e74ba__netlify-deploy-services-updater",
+      "mcp__bab960a3-7442-4f51-987f-a67b995e74ba__netlify-project-services-reader",
+      "Bash(C:/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe -ss 00:00:15 -i 'D:/Proyectos claude/mundo-multimedia/proyectos/face-swap/dia_padre_final.mp4' -frames:v 1 -q:v 2 'D:/Proyectos claude/mundo-multimedia/proyectos/face-swap/frame_test.jpg' -y)",
+      "Bash(sort -k5 -rh)",
+      "Bash(sort -k6,7 -r)",
+      "Bash(cp 'C:/Users/Romer/Downloads/WhatsApp Image 2026-06-21 at 3.41.31 PM.jpeg' 'D:/Proyectos claude/mundo-multimedia/proyectos/face-swap/padre_nuevo.jpg')",
+      "Bash(cp 'C:/Users/Romer/Downloads/WhatsApp Image 2026-06-21 at 3.41.29 PM.jpeg' 'D:/Proyectos claude/mundo-multimedia/proyectos/face-swap/hijo_nuevo.jpg')"
+    ]
+  }
+}

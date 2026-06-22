@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  # n8n — automatizaciones (gratis, self-hosted)
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n_agencia
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-cambiar_esto}
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=Europe/Madrid
+      - TZ=Europe/Madrid
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+
+  # Supabase local (para desarrollo sin coste)
+  supabase-db:
+    image: supabase/postgres:15.1.0.117
+    container_name: supabase_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres_local_dev}
+      POSTGRES_DB: agencia_ia
+    volumes:
+      - supabase_data:/var/lib/postgresql/data
+
+  # Redis (para caché y colas de tareas)
+  redis:
+    image: redis:7-alpine
+    container_name: redis_agencia
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Ollama (IA local gratis)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_agencia
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Descomentar si tienes GPU NVIDIA:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+
+volumes:
+  n8n_data:
+  supabase_data:
+  redis_data:
+  ollama_data:

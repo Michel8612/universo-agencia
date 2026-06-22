@@ -1,0 +1,169 @@
+{
+  "name": "🚀 Publicar en Redes Sociales (Agencia IA)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publish-social",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-entrada",
+      "name": "Webhook Entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.platforms.includes('instagram') }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "check-instagram",
+      "name": "¿Instagram?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.platforms.includes('twitter') }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "check-twitter",
+      "name": "¿Twitter/X?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.platforms.includes('linkedin') }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "check-linkedin",
+      "name": "¿LinkedIn?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/{{ $env.INSTAGRAM_ACCOUNT_ID }}/media",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "caption", "value": "={{ $('Webhook Entrada').item.json.content }}" },
+            { "name": "image_url", "value": "={{ $('Webhook Entrada').item.json.image_url }}" },
+            { "name": "access_token", "value": "={{ $env.INSTAGRAM_ACCESS_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "instagram-crear-media",
+      "name": "Instagram: Crear Media",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitter.com/2/tweets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "text", "value": "={{ $('Webhook Entrada').item.json.content.substring(0, 280) }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "twitter-post",
+      "name": "Twitter: Publicar Tweet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "text": "={{ $('Webhook Entrada').item.json.content }}",
+        "additionalFields": {}
+      },
+      "id": "linkedin-post",
+      "name": "LinkedIn: Publicar Post",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [700, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Publicado en todas las plataformas', timestamp: new Date().toISOString() }) }}"
+      },
+      "id": "respuesta-ok",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [960, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada": {
+      "main": [[
+        { "node": "¿Instagram?", "type": "main", "index": 0 },
+        { "node": "¿Twitter/X?", "type": "main", "index": 0 },
+        { "node": "¿LinkedIn?", "type": "main", "index": 0 }
+      ]]
+    },
+    "¿Instagram?": {
+      "main": [
+        [{ "node": "Instagram: Crear Media", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "¿Twitter/X?": {
+      "main": [
+        [{ "node": "Twitter: Publicar Tweet", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "¿LinkedIn?": {
+      "main": [
+        [{ "node": "LinkedIn: Publicar Post", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Instagram: Crear Media": { "main": [[{ "node": "Respuesta OK", "type": "main", "index": 0 }]] },
+    "Twitter: Publicar Tweet": { "main": [[{ "node": "Respuesta OK", "type": "main", "index": 0 }]] },
+    "LinkedIn: Publicar Post": { "main": [[{ "node": "Respuesta OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": ["agencia-ia", "social-media", "automatizacion"]
+}
