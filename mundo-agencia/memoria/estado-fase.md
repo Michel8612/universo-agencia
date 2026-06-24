@@ -52,6 +52,19 @@ Webhook → Validar → Guardar CRM → IA analiza (Ollama) → Email prospecto 
 
 ---
 
+## 🔭 VISIÓN FASE 2 — al llegar el PRIMER LEAD/CLIENTE (decidido por Michel 2026-06-24)
+
+Cuando entre el primer ingreso, migramos TODO a un VPS y automatizamos de punta a punta:
+- **VPS** con todo corriendo 24/7 sin descanso (n8n, Flask, scrapers, campañas, Ollama o API)
+- **Auto-gestión total**: encuentra leads, diagnostica, redacta, envía, responde y hace seguimiento solo
+- **API de pago activada** (Claude/OpenRouter) para calidad y velocidad superiores a Ollama local
+- **Hermes Agent** en el VPS: un agente que orquesta y gestiona toda la operación literalmente
+- **Chatbot propio de NEXIA** (para la web y atención interna)
+- **Ampliar nichos y sub-nichos** + campañas mucho más amplias (multi-país)
+- **Aplicar a trabajos freelance vía API en TODAS las plataformas que lo permitan** (donde exista API key / oportunidad legal). Nota honesta: la mayoría permiten BUSCAR vía API pero NO auto-aplicar (viola ToS, banea). Evaluar caso por caso; algunas con plan de pago/partner podrían permitir pujar programático.
+
+Regla de idioma (ya implementada en buscar-trabajos.py): aunque trabajemos en español, cada propuesta se escribe 100% en el idioma del proyecto (detección automática + imposición a la IA), sin mezclas.
+
 ## FASE: PRE-CLIENTE (0€ facturado)
 
 **Regla de modelos:** TODO con Ollama local (gratis). Claude API de pago SOLO cuando haya primer ingreso real.

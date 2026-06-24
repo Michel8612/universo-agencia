@@ -56,6 +56,23 @@ def get(url, timeout=25, intentos=3):
             time.sleep(1.5 * (n + 1))
     raise last
 
+# Detección de idioma por palabras comunes (sin dependencias)
+IDIOMAS = {
+    "español": [" el ", " la ", " de ", " que ", " para ", " con ", " una ", " los ", " por ", "ñ", "ción ", " necesito ", " busco ", " página ", " desarrollador "],
+    "inglés": [" the ", " and ", " for ", " with ", " you ", " our ", " need ", " looking ", " website ", " want ", " will ", " developer "],
+    "portugués": [" não ", " você ", " uma ", " precisa ", " preciso ", " obrigado ", "ção ", " estou ", " olá ", " desenvolvedor "],
+    "francés": [" je ", " vous ", " nous ", " votre ", " une ", " pour ", " avec ", " besoin ", " bonjour ", " merci ", " être ", " développeur ", " création ", " site web "],
+    "italiano": [" il ", " di ", " che ", " per ", " sono ", " sito ", " grazie ", " abbiamo ", " sviluppatore ", " ciao "],
+}
+def detectar_idioma(texto):
+    t = " " + texto.lower() + " "
+    mejor, score = "inglés", 0
+    for idioma, marcas in IDIOMAS.items():
+        s = sum(t.count(m) for m in marcas)
+        if s > score:
+            mejor, score = idioma, s
+    return mejor
+
 def es_relevante(t):
     texto = (t["titulo"] + " " + t["descripcion"] + " " + " ".join(t["skills"])).lower()
     if any(x in texto for x in EXCLUIR):
@@ -94,19 +111,22 @@ def normalizar(p):
     }
 
 def generar_propuesta(t):
-    prompt = f"""Eres un freelancer profesional de NEXIA (desarrollo web, chatbots, IA y automatización). Escribe una propuesta GANADORA y BREVE (máx 90 palabras) para este proyecto de Freelancer.com.
+    idioma = detectar_idioma(t["titulo"] + " " + t["descripcion"])
+    prompt = f"""You are a professional freelancer from NEXIA (web development, chatbots, AI and automation). Write a WINNING, SHORT proposal (max 90 words) for this Freelancer.com project.
 
-Proyecto: {t['titulo']}
-Descripción: {t['descripcion']}
+Project: {t['titulo']}
+Description: {t['descripcion']}
 Skills: {', '.join(t['skills'])}
 
-Reglas de la propuesta:
-- TODO el mensaje en UN SOLO idioma: el mismo de la descripción del proyecto (si está en inglés, todo en inglés; si está en español, todo en español). NO mezcles idiomas.
-- Empieza refiriéndote a algo concreto de SU proyecto (no "Estimado señor" ni "Dear Sir").
-- 2-3 frases: demuestra que entiendes su necesidad + cómo lo resolverías.
-- Termina con UNA pregunta concreta para iniciar conversación.
-- Tono profesional y cercano. Sin promesas falsas, sin relleno. No inventes experiencia previa concreta.
-- Devuelve SOLO el texto de la propuesta, sin encabezados ni "Propuesta:"."""
+CRITICAL LANGUAGE RULE: The ENTIRE proposal MUST be written ONLY in {idioma}. Every single word in {idioma}. Do NOT mix languages. Do NOT use any other language.
+
+Other rules:
+- Start by referring to something concrete about THEIR project (not "Dear Sir").
+- 2-3 sentences: show you understand their need + how you would solve it.
+- End with ONE concrete question to start a conversation.
+- Professional, warm tone. No false promises, no filler. Do not invent specific past experience.
+- Return ONLY the proposal text, no headers, no "Proposal:" label.
+- REMEMBER: write everything in {idioma}."""
     body = json.dumps({"model": "qwen2.5:14b", "prompt": prompt, "stream": False}).encode()
     try:
         req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
