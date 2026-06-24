@@ -1,0 +1,17 @@
+# Configuración de build de Netlify para la web NEXIA
+# El sitio vive en mundo-ventas/web-nexia dentro del monorepo.
+[build]
+  base = "mundo-ventas/web-nexia"
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Cabeceras de seguridad básicas (cimiento 4 del checklist legal)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
