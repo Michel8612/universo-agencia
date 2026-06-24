@@ -22,10 +22,18 @@ Webhook → Validar → Guardar CRM → IA analiza (Ollama) → Email prospecto 
 - `mundo-ventas/herramientas/diagnostico-web.py` — audita web → problemas → servicios+precio → pitch IA
 - `mundo-ventas/catalogo-servicios.json` — 50 servicios con precios y triggers de diagnóstico
 
-### Web & datos (de sesiones previas — verificar al retomar)
-- Web NEXIA → https://nexia-ia-com.netlify.app (REVISAR: casos de éxito son inventados)
+### Web & datos
+- Web NEXIA → https://nexia-ia-com.netlify.app (rediseñada: programa fundador, mockups, animaciones, legal completo)
+- **Auto-deploy Netlify↔GitHub ACTIVO**: cada push a `main` (repo Michel8612/universo-agencia) se publica solo. Build: base=mundo-ventas/web-nexia, command=npm run build, publish=out. NO hace falta deploy manual.
+- **Google Search Console VERIFICADO** (cuenta teamorionglobal@gmail.com, etiqueta HTML en layout.tsx) + sitemap.xml enviado
 - Supabase DB → tahzdjevzxppeqiajvnz.supabase.co (migración pospuesta, seguimos en SQLite)
-- GitHub → https://github.com/Michel8612/nexia-agencia-ia
+- GitHub repo real → https://github.com/Michel8612/universo-agencia
+
+### Máquinas de captación activas
+- `buscar-trabajos.py` — proyectos de Freelancer.com + propuestas IA (en idioma del proyecto)
+- `campana-leads.py` — motor multi-nicho/ciudad → CRM (21 leads ya, 10+ con email)
+- Task Scheduler `nexia-campana-leads` → corre cada día 08:00, llena el CRM solo
+- PENDIENTE de Michel: enviar primeros emails en tandas 20-40/día (ver CHECKLIST-LEGAL.md)
 
 ---
 
