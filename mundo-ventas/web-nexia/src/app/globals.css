@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
   --foreground-rgb: 255, 255, 255;
@@ -17,4 +17,115 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ─── ANIMACIONES ─────────────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50%      { transform: translateY(-22px) translateX(10px); }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%      { opacity: 0.6;  transform: scale(1.08); }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 900; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-150%); }
+  100% { transform: translateX(150%); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+
+/* Entrada en carga (hero) — con escalonado */
+.anim-fadeUp   { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+.anim-fadeIn   { opacity: 0; animation: fadeIn 1s ease forwards; }
+.d-1 { animation-delay: 0.12s; }
+.d-2 { animation-delay: 0.24s; }
+.d-3 { animation-delay: 0.36s; }
+.d-4 { animation-delay: 0.48s; }
+.d-5 { animation-delay: 0.60s; }
+
+.anim-float      { animation: float 6s ease-in-out infinite; }
+.anim-floatSlow  { animation: floatSlow 9s ease-in-out infinite; }
+.anim-pulseGlow  { animation: pulseGlow 7s ease-in-out infinite; }
+.anim-blink      { animation: blink 1.4s ease-in-out infinite; }
+
+/* Texto con degradado animado */
+.text-gradient-anim {
+  background: linear-gradient(90deg, #60a5fa, #3b82f6, #818cf8, #3b82f6, #60a5fa);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s linear infinite;
+}
+
+/* Línea del gráfico que se dibuja */
+.draw-line {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: drawLine 2.2s ease-out 0.5s forwards;
+}
+
+/* Reveal al hacer scroll (lo activa el IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Botón con brillo al pasar el cursor */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::after {
+  content: "";
+  position: absolute; top: 0; left: 0; width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: translateX(-150%);
+}
+.btn-shine:hover::after { animation: shimmer 0.9s ease; }
+
+/* Tarjetas que se elevan */
+.card-lift { transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+.card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -20px rgba(59,130,246,0.4);
+}
+
+/* Accesibilidad: respetar a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, .reveal, .anim-fadeUp, .anim-fadeIn, .anim-float, .anim-floatSlow,
+  .anim-pulseGlow, .text-gradient-anim, .draw-line, .anim-blink {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

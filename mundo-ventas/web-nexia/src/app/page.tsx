@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ── CONFIG ──────────────────────────────────────────────────
 const EMAIL_DESTINO = "teamorionglobal@gmail.com";
@@ -83,7 +83,7 @@ function MockupDashboard() {
       <text x="350" y="118" fontFamily="Inter,sans-serif" fontSize="24" fontWeight="800" fill="#34d399">24%</text>
       {/* chart */}
       <rect x="152" y="148" width="350" height="196" rx="10" fill="#0a1120" />
-      <polyline points="172,300 220,270 268,285 316,230 364,250 412,190 470,210" fill="none" stroke="url(#md-acc)" strokeWidth="3" />
+      <polyline className="draw-line" points="172,300 220,270 268,285 316,230 364,250 412,190 470,210" fill="none" stroke="url(#md-acc)" strokeWidth="3" />
       {[172,220,268,316,364,412,470].map((x,i)=>(<circle key={i} cx={x} cy={[300,270,285,230,250,190,210][i]} r="4" fill="#60a5fa" />))}
       <rect x="172" y="316" width="300" height="6" rx="3" fill="#1e293b" />
     </svg>
@@ -100,7 +100,7 @@ function MockupChatbot() {
       <circle cx="44" cy="66" r="14" fill="#3b82f6" />
       <text x="44" y="71" fontFamily="Inter,sans-serif" fontSize="13" fontWeight="700" fill="#fff" textAnchor="middle">N</text>
       <text x="66" y="62" fontFamily="Inter,sans-serif" fontSize="12" fontWeight="700" fill="#fff">Asistente NEXIA</text>
-      <text x="66" y="77" fontFamily="Inter,sans-serif" fontSize="9" fill="#34d399">● En línea</text>
+      <text x="66" y="77" fontFamily="Inter,sans-serif" fontSize="9" fill="#34d399"><tspan className="anim-blink">●</tspan> En línea</text>
       {/* bubbles */}
       <rect x="30" y="100" width="150" height="44" rx="12" fill="#16213f" />
       <text x="42" y="120" fontFamily="Inter,sans-serif" fontSize="9.5" fill="#cbd5e1">Hola 👋 ¿En qué puedo</text>
@@ -187,12 +187,33 @@ function ContactForm() {
       <textarea name="mensaje" value={form.mensaje} onChange={onChange} rows={4} placeholder="¿Qué necesitas? (opcional)"
         className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none" />
       <button type="submit" disabled={estado === "enviando"}
-        className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold py-4 rounded-lg transition-colors">
+        className="btn-shine w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold py-4 rounded-lg transition-colors">
         {estado === "enviando" ? "Enviando…" : "Quiero mi diagnóstico gratis →"}
       </button>
       {estado === "error" && <p className="text-red-400 text-sm text-center">Algo falló. Escríbenos directo a {EMAIL_DESTINO}</p>}
       <p className="text-xs text-gray-600 text-center">Sin compromiso · Respuesta en 24h · 100% gratuito</p>
     </form>
+  );
+}
+
+// ── REVEAL al hacer scroll ──────────────────────────────────
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`reveal ${visible ? "is-visible" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
   );
 }
 
@@ -234,26 +255,27 @@ export default function Home() {
 
       {/* HERO */}
       <section className="relative pt-32 pb-20 px-6">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl -z-0" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl -z-0 anim-pulseGlow" />
+        <div className="absolute top-40 -left-20 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl -z-0 anim-pulseGlow" style={{ animationDelay: "2s" }} />
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
           <div>
-            <span className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
-              🚀 Programa Fundador abierto · {PLAZAS_FUNDADOR} plazas
+            <span className="anim-fadeUp inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
+              <span className="anim-blink">🚀</span> Programa Fundador abierto · {PLAZAS_FUNDADOR} plazas
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
-              Tu negocio,<br /><span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">trabajando 24/7 con IA</span>
+            <h1 className="anim-fadeUp d-1 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+              Tu negocio,<br /><span className="text-gradient-anim">trabajando 24/7 con IA</span>
             </h1>
-            <p className="text-lg text-gray-400 mb-8 max-w-lg">
+            <p className="anim-fadeUp d-2 text-lg text-gray-400 mb-8 max-w-lg">
               Webs profesionales, chatbots inteligentes y automatización para pymes. Empezamos con un <strong className="text-white">diagnóstico gratuito</strong> de tu web: te decimos exactamente qué falla y cuánto cuesta arreglarlo.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#contacto" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-4 rounded-lg text-center transition-colors">Quiero mi diagnóstico gratis</a>
+            <div className="anim-fadeUp d-3 flex flex-col sm:flex-row gap-4">
+              <a href="#contacto" className="btn-shine bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-4 rounded-lg text-center transition-colors">Quiero mi diagnóstico gratis</a>
               <a href="#servicios" className="border border-white/15 hover:bg-white/5 text-white font-semibold px-7 py-4 rounded-lg text-center transition-colors">Ver servicios</a>
             </div>
           </div>
-          <div className="relative">
-            <MockupDashboard />
-            <div className="absolute -bottom-8 -left-4 w-28 sm:w-36"><MockupChatbot /></div>
+          <div className="anim-fadeIn d-2 relative">
+            <div className="anim-float"><MockupDashboard /></div>
+            <div className="absolute -bottom-8 -left-4 w-28 sm:w-36 anim-floatSlow"><MockupChatbot /></div>
           </div>
         </div>
       </section>
@@ -271,24 +293,26 @@ export default function Home() {
       {/* SERVICIOS */}
       <section id="servicios" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Lo que hacemos por tu negocio</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">Soluciones concretas con precio cerrado. Sin paquetes inflados: pagas por lo que necesitas.</p>
-          </div>
+          </Reveal>
           <div className="grid md:grid-cols-2 gap-6">
-            {SERVICIOS.map((s) => (
-              <div key={s.titulo} className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 hover:border-blue-500/30 transition-colors">
-                <div className="text-4xl mb-4">{s.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{s.titulo}</h3>
-                <p className="text-gray-400 text-sm mb-5 leading-relaxed">{s.desc}</p>
-                <ul className="space-y-2">
-                  {s.items.map((it) => (
-                    <li key={it} className="flex items-center gap-2 text-sm text-gray-300">
-                      <span className="text-blue-400">✓</span>{it}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {SERVICIOS.map((s, i) => (
+              <Reveal key={s.titulo} delay={i * 100}>
+                <div className="card-lift h-full bg-white/[0.02] border border-white/10 rounded-2xl p-8 hover:border-blue-500/40">
+                  <div className="text-4xl mb-4">{s.icon}</div>
+                  <h3 className="text-xl font-bold mb-2">{s.titulo}</h3>
+                  <p className="text-gray-400 text-sm mb-5 leading-relaxed">{s.desc}</p>
+                  <ul className="space-y-2">
+                    {s.items.map((it) => (
+                      <li key={it} className="flex items-center gap-2 text-sm text-gray-300">
+                        <span className="text-blue-400">✓</span>{it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -297,17 +321,19 @@ export default function Home() {
       {/* PROCESO */}
       <section id="proceso" className="py-24 px-6 bg-white/[0.015] border-y border-white/5">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Cómo trabajamos</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">Empezamos siempre por un diagnóstico real y gratuito. Tú decides con datos, no con promesas.</p>
-          </div>
+          </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PROCESO.map((p) => (
-              <div key={p.num} className="relative bg-[#0d1426] border border-white/10 rounded-2xl p-7">
-                <span className="text-5xl font-extrabold text-blue-500/20 absolute top-4 right-5">{p.num}</span>
-                <h3 className="text-lg font-bold mb-2 relative z-10">{p.titulo}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed relative z-10">{p.desc}</p>
-              </div>
+            {PROCESO.map((p, i) => (
+              <Reveal key={p.num} delay={i * 100}>
+                <div className="card-lift relative bg-[#0d1426] border border-white/10 rounded-2xl p-7 h-full hover:border-blue-500/40">
+                  <span className="text-5xl font-extrabold text-blue-500/20 absolute top-4 right-5">{p.num}</span>
+                  <h3 className="text-lg font-bold mb-2 relative z-10">{p.titulo}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed relative z-10">{p.desc}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -315,7 +341,7 @@ export default function Home() {
 
       {/* PROGRAMA FUNDADOR */}
       <section id="fundador" className="py-24 px-6">
-        <div className="max-w-4xl mx-auto bg-gradient-to-br from-blue-600/15 to-blue-900/10 border border-blue-500/25 rounded-3xl p-10 sm:p-14 text-center">
+        <Reveal className="max-w-4xl mx-auto bg-gradient-to-br from-blue-600/15 to-blue-900/10 border border-blue-500/25 rounded-3xl p-10 sm:p-14 text-center">
           <span className="inline-block bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">⭐ Solo {PLAZAS_FUNDADOR} plazas</span>
           <h2 className="text-3xl sm:text-4xl font-bold mb-5">Programa Fundador</h2>
           <p className="text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
@@ -333,26 +359,26 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <a href="#contacto" className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-lg transition-colors">Solicitar plaza fundador →</a>
-        </div>
+          <a href="#contacto" className="btn-shine inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-lg transition-colors">Solicitar plaza fundador →</a>
+        </Reveal>
       </section>
 
       {/* FAQ */}
       <section className="py-24 px-6 bg-white/[0.015] border-y border-white/5">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">Preguntas frecuentes</h2>
-          <div className="space-y-3">{FAQ.map((f) => <FAQItem key={f.q} {...f} />)}</div>
+          <Reveal><h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">Preguntas frecuentes</h2></Reveal>
+          <Reveal className="space-y-3">{FAQ.map((f) => <FAQItem key={f.q} {...f} />)}</Reveal>
         </div>
       </section>
 
       {/* CONTACTO */}
       <section id="contacto" className="py-24 px-6">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
+          <Reveal className="text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Tu diagnóstico web gratis</h2>
             <p className="text-gray-400">Déjanos tus datos y en 24h te enviamos un informe real de tu web con qué mejorar y cuánto cuesta. Sin compromiso.</p>
-          </div>
-          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8"><ContactForm /></div>
+          </Reveal>
+          <Reveal delay={100} className="bg-white/[0.02] border border-white/10 rounded-2xl p-8"><ContactForm /></Reveal>
         </div>
       </section>
 
