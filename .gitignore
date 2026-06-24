@@ -44,3 +44,6 @@ tmp/
 temp/
 *.tmp
 *.bak
+
+trabajos-encontrados/
+leads-scrapeados/

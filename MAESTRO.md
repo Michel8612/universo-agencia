@@ -205,6 +205,14 @@ python diagnostico-web.py --url restaurante.com --negocio "X" --pitch
 python diagnostico-web.py --csv ../leads-scrapeados/XXXX.csv --pitch --limite 10
 ```
 Flujo de venta completo: scraper-leads (encuentra) -> diagnostico-web (audita+pitch) -> CRM -> funnel email. Probado: unsushi.es -> 5 problemas reales -> $280-950 en servicios -> email listo para enviar.
+
+### Buscador de trabajos freelance (mundo-ventas/herramientas/buscar-trabajos.py)
+Trae proyectos reales de la API pública de Freelancer.com (sin login), filtra por skills NEXIA + presupuesto USD + competencia (nº pujas), y genera una propuesta personalizada con Ollama para cada uno. Salida: CSV + Markdown legible en `trabajos-encontrados/`. TÚ revisas y aplicas manual (NUNCA auto-aplicar: banea la cuenta).
+```
+python buscar-trabajos.py --min-budget 200 --max-competencia 40 --propuestas
+python buscar-trabajos.py --query chatbot --propuestas --top 5
+```
+Probado: encuentra proyectos reales ($250-6350), normaliza monedas a USD, propuestas que referencian la necesidad concreta del cliente.
 mundo-multimedia/       → vídeo, imagen, audio
   └── herramientas/face_swap_video.py   (insightface face swap)
   └── herramientas/dia-padre-CALIDAD.bat (video Día del Padre, full res)
