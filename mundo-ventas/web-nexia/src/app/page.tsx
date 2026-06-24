@@ -358,17 +358,45 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="border-t border-white/10 py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start justify-between gap-6">
           <div>
             <p className="text-lg font-bold">NEX<span className="text-blue-400">IA</span></p>
-            <p className="text-gray-500 text-sm">Agencia de IA, webs y automatización para pymes.</p>
+            <p className="text-gray-500 text-sm max-w-xs">Agencia de IA, webs y automatización para pymes. Algunos servicios usan inteligencia artificial; los resultados pueden contener errores y no sustituyen asesoramiento profesional.</p>
           </div>
-          <div className="text-gray-500 text-sm text-center sm:text-right">
+          <div className="text-gray-500 text-sm sm:text-right">
+            <div className="flex flex-wrap gap-x-5 gap-y-2 sm:justify-end mb-3">
+              <a href="/terminos/" className="hover:text-white transition-colors">Términos</a>
+              <a href="/privacidad/" className="hover:text-white transition-colors">Privacidad</a>
+              <a href="/cookies/" className="hover:text-white transition-colors">Cookies</a>
+            </div>
             <a href={`mailto:${EMAIL_DESTINO}`} className="hover:text-white transition-colors">{EMAIL_DESTINO}</a>
             <p className="mt-1">© {new Date().getFullYear()} NEXIA · Hecho con IA</p>
           </div>
         </div>
       </footer>
+
+      <CookieBanner />
     </main>
+  );
+}
+
+// ── BANNER DE COOKIES ───────────────────────────────────────
+function CookieBanner() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    try { if (!localStorage.getItem("nexia-cookies-ok")) setVisible(true); } catch {}
+  }, []);
+  if (!visible) return null;
+  const aceptar = () => { try { localStorage.setItem("nexia-cookies-ok", "1"); } catch {} setVisible(false); };
+  return (
+    <div className="fixed bottom-0 inset-x-0 z-50 bg-[#0d1426] border-t border-white/10 px-6 py-4">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center gap-4 justify-between">
+        <p className="text-gray-400 text-sm">
+          Usamos solo cookies esenciales para que la web funcione. Más info en nuestra{" "}
+          <a href="/cookies/" className="text-blue-400 underline">Política de Cookies</a>.
+        </p>
+        <button onClick={aceptar} className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-6 py-2 rounded-lg whitespace-nowrap transition-colors">Entendido</button>
+      </div>
+    </div>
   );
 }
