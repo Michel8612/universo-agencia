@@ -213,6 +213,15 @@ python buscar-trabajos.py --min-budget 200 --max-competencia 40 --propuestas
 python buscar-trabajos.py --query chatbot --propuestas --top 5
 ```
 Probado: encuentra proyectos reales ($250-6350), normaliza monedas a USD, propuestas que referencian la necesidad concreta del cliente.
+
+### Motor de campaña de leads (mundo-ventas/herramientas/campana-leads.py)
+Recorre combinaciones nicho×ciudad (COMBOS configurable), encuentra negocios con web (OSM), diagnostica cada web, puntúa, enriquece email, redacta primer email con opt-out (Ollama) y guarda en CRM con estado `lead_campana_t0`. Sin duplicados (estado en `campana-estado.json`). Tolerante a fallos de red. Pensado para correr en bucle (Task Scheduler/n8n) y llenar el pipeline solo — "la IA no se cansa".
+```
+python campana-leads.py --combos 12 --por-combo 4           # pasada completa
+python campana-leads.py --solo-listar                        # ver combinaciones
+```
+SOLO prepara emails, NO envía. Enviar en tandas 20-40/día con identidad+baja (Gmail crudo masivo = baneo). Probado: dentistas Madrid+Barcelona -> 6 leads con email real + diagnóstico + valor en CRM.
+Estrategia (Michel): trabajar TODAS las líneas en paralelo, seguimiento para calentar, IA hace el trabajo incansable, humano cierra.
 mundo-multimedia/       → vídeo, imagen, audio
   └── herramientas/face_swap_video.py   (insightface face swap)
   └── herramientas/dia-padre-CALIDAD.bat (video Día del Padre, full res)
