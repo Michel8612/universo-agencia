@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   icons: { icon: "/favicon.svg" },
+  verification: {
+    google: "q7V4_l7w6znPwtQMvmTyZFMKX2TIewfw9Q2TH7OSxkI",
+  },
 };
 
 const JSONLD = {
