@@ -14,8 +14,11 @@ Uso:
 import urllib.request, urllib.parse, json, time, re, csv, argparse, sys, os
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from llm import generar as llm_generar
+from notificar import aviso_lead
+
 UA = "NEXIA-LeadScraper/1.0 (contacto: teamorionglobal@gmail.com)"
-OLLAMA = "http://localhost:11434/api/generate"
 CRM_URL = "http://127.0.0.1:8080/crm/cliente"
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "leads-scrapeados")
 
@@ -196,21 +199,19 @@ def enriquecer_email(web):
             continue
     return ""
 
-def clasificar_ollama(negocio):
-    """Puntua el lead (1-10) y sugiere servicio NEXIA. Usa Ollama local."""
+def clasificar_lead(negocio):
+    """Puntua el lead (1-10) y sugiere servicio NEXIA. Usa Groq o Ollama (ver llm.py)."""
     prompt = f"""Eres analista comercial de NEXIA (agencia de IA). Evalua este negocio como lead potencial.
 Negocio: {negocio['nombre']} | Tipo: {negocio['categoria']} | Web: {negocio['web'] or 'SIN WEB'} | Tel: {negocio['telefono'] or 'no'}
 Devuelve SOLO JSON: {{"puntuacion": 1-10, "servicio": "...", "motivo": "una frase"}}
 Criterio: sin web = oportunidad alta para Landing+Chatbot. Con web antigua = automatizacion. Puntua mayor si falta presencia digital."""
-    body = json.dumps({"model": "qwen2.5:14b", "prompt": prompt, "stream": False}).encode()
     try:
-        req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
-        resp = json.loads(urllib.request.urlopen(req, timeout=120).read())["response"]
+        resp = llm_generar(prompt, temperature=0.3)
         m = re.search(r'\{[\s\S]*\}', resp)
         if m:
             j = json.loads(m.group(0))
             return j.get("puntuacion", 5), j.get("servicio", "Consultoria IA"), j.get("motivo", "")
-    except Exception as e:
+    except Exception:
         pass
     return 5, "Consultoria IA", "sin analisis"
 
@@ -226,6 +227,13 @@ def guardar_crm(negocio):
     try:
         req = urllib.request.Request(CRM_URL, data=payload, headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=8)
+        # Aviso interno a Slack (best-effort; solo si SLACK_WEBHOOK_URL esta configurado)
+        aviso_lead(
+            negocio["nombre"],
+            score=negocio.get("puntuacion"),
+            servicio=negocio.get("servicio", ""),
+            extra=f"{negocio['categoria']} · {negocio['direccion']} · web:{negocio['web'] or 'NO'}",
+        )
         return True
     except Exception:
         return False
@@ -297,7 +305,7 @@ def main():
     if args.clasificar:
         print("  Clasificando con Ollama (puede tardar)...")
         for i, l in enumerate(leads):
-            p, s, m = clasificar_ollama(l)
+            p, s, m = clasificar_lead(l)
             l["puntuacion"], l["servicio"], l["motivo"] = p, s, m
             print(f"    [{i+1}/{len(leads)}] {l['nombre'][:25]} -> {p}/10 ({s})")
         leads.sort(key=lambda x: x.get("puntuacion", 0), reverse=True)

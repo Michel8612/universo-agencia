@@ -12,11 +12,13 @@ Uso:
   python buscar-trabajos.py --query chatbot --propuestas
   python buscar-trabajos.py --min-budget 200 --max-competencia 30 --propuestas
 """
-import urllib.request, urllib.parse, json, time, re, csv, argparse, os
+import urllib.request, urllib.parse, json, time, re, csv, argparse, os, sys
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from llm import generar as llm_generar, backend_activo
+
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NEXIA-JobFinder/1.0"
-OLLAMA = "http://localhost:11434/api/generate"
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "trabajos-encontrados")
 FL_API = "https://www.freelancer.com/api/projects/0.1/projects/active/"
 FL_PROJECT = "https://www.freelancer.com/projects/"
@@ -127,10 +129,8 @@ Other rules:
 - Professional, warm tone. No false promises, no filler. Do not invent specific past experience.
 - Return ONLY the proposal text, no headers, no "Proposal:" label.
 - REMEMBER: write everything in {idioma}."""
-    body = json.dumps({"model": "qwen2.5:14b", "prompt": prompt, "stream": False}).encode()
     try:
-        req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
-        return json.loads(urllib.request.urlopen(req, timeout=120).read())["response"].strip()
+        return llm_generar(prompt, temperature=0.7)
     except Exception as e:
         return f"(no se pudo generar: {e})"
 
@@ -169,7 +169,7 @@ def main():
     print(f"  {len(trabajos)} trabajos relevantes (min ${args.min_budget} USD, max {args.max_competencia} pujas)\n")
 
     if args.propuestas:
-        print("  Generando propuestas con Ollama (puede tardar)...")
+        print(f"  Generando propuestas con {backend_activo()} (puede tardar)...")
         for i, t in enumerate(trabajos):
             t["propuesta"] = generar_propuesta(t)
             print(f"    [{i+1}/{len(trabajos)}] {t['titulo'][:45]}")
