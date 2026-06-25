@@ -4,25 +4,46 @@
 
 ---
 
-## 🆕 SESIÓN 2026-06-25 (rama claude/focused-ride-801h71)
+## 🆕 SESIÓN 2026-06-25 — RESUMEN COMPLETO (todo en `main`)
 
-- **Groq integrado en las herramientas de ventas** (con fallback a Ollama):
-  nuevo `mundo-ventas/herramientas/llm.py`. Si hay `GROQ_API_KEY` usa Groq
-  (rápido, gratis, funciona en cualquier máquina/VPS); si no, cae a Ollama local.
-  Refactorizados: buscar-trabajos, diagnostico-web, scraper-leads, campana-leads,
-  generar-propuesta. `.env.example` ampliado con `GROQ_*` / `OLLAMA_*`.
-- **Guía OpenClaw + Groq**: `mundo-agencia/OPENCLAW-GROQ.md` (pasos para conectar
-  Groq en OpenClaw en la PC de EE.UU. + en las herramientas Python).
-- **Landing optimizada para conversión** (`web-nexia/src/app/page.tsx`):
-  bloque "qué incluye tu diagnóstico", línea de confianza en el hero
-  (sin tarjeta / 24h / sin permanencia), botón flotante de WhatsApp (configurable
-  con la constante `WHATSAPP`) y barra CTA fija en móvil. Build verificado OK.
-- **Limpieza repo**: des-trackeados `web-nexia/.next` y `web-nexia/out` (artefactos
-  de build que estaban commiteados por error; Netlify ya hace `npm run build`).
-- ⚠️ PENDIENTE de TI: poner número en la constante `WHATSAPP` de la landing;
-  crear la `GROQ_API_KEY` en https://console.groq.com/keys y configurarla en
-  OpenClaw + en `.env`. La caza de leads/trabajos en vivo se corre en tu PC/VPS
-  (la red del entorno cloud de Claude bloquea Freelancer/OSM).
+> Handoff detallado: `mundo-agencia/memoria/CAMBIOS-2026-06-25.md`
+> Índice de docs: `mundo-agencia/README.md`
+
+### Hecho y en producción
+- **Web NEXIA LIVE** → https://nexia-ia-com.netlify.app (se desbloqueó haciendo el repo
+  **público**; el plan gratis de Netlify bloqueaba deploys de repos privados).
+  Incluye: botón WhatsApp (+53 5665 9464), botones Telegram → @Jarvistrading2026_bot,
+  bloque "qué analizamos", línea de confianza, barra CTA móvil.
+- **Next.js 14.2.3 → 14.2.35** (cierra CVE).
+
+### Hecho en el repo (a configurar/usar en la PC)
+- **Groq + fallback Ollama**: `mundo-ventas/herramientas/llm.py` usado por las 5
+  herramientas. Activar con `GROQ_API_KEY` en `.env`.
+- **Slack** avisos de leads: `herramientas/notificar.py` (necesita `SLACK_WEBHOOK_URL`).
+- **Sala VIP Telegram** (leads calentados): `herramientas/telegram_sala.py` + guía
+  `TELEGRAM-SALA-VIP.md` (necesita `TELEGRAM_BOT_TOKEN` y `TELEGRAM_SALA_CHAT_ID`).
+- **MCP de empleos** (`mundo-ventas/mcp-empleos/`): herramientas `buscar_empleos`
+  (Freelancer) y `buscar_empleos_remoto` (Remotive) para Claude Desktop.
+- **Spec Kit** (SDD): `setup-speckit.sh` + `SPECKIT.md` + constitución NEXIA.
+- **Perfil freelance** ES/EN: `mundo-ventas/PERFIL-FREELANCE.md` (Malt/Upwork/Freelancer/Workana).
+- **Taíno Labs RESCATADO**: `mundo-saas-factory/tainolabs/` (landing de respuesta de
+  leads que solo existía como HTML suelto en Netlify; ahora versionada + plan en su README).
+- **Puente de continuidad**: `MCP-PUENTE-PC.md` (MCP filesystem para `D:\Proyectos claude`
+  en Claude Desktop + protocolo Git como nexo nube↔PC).
+
+### ⚠️ Pendiente de TI (en la PC)
+1. `cp .env.example .env` y rellenar: `GROQ_API_KEY`, `SLACK_WEBHOOK_URL`,
+   `TELEGRAM_BOT_TOKEN`, `TELEGRAM_SALA_CHAT_ID`.
+2. Configurar los MCP en Claude Desktop (filesystem + empleos) — ver `MCP-PUENTE-PC.md`.
+3. Crear el grupo privado Telegram (sala VIP) y conectar el disparador de "lead calentado".
+4. `bash mundo-agencia/setup-speckit.sh`.
+5. Correr scraper/buscador de empleos (la red de la PC sí llega a Freelancer/OSM; la nube no).
+6. Decidir Taíno Labs: modelo (SaaS/servicio), precio, y pasar su deploy a Git.
+
+### Notas de entorno (importante)
+- La sesión de Claude en la NUBE no ve el disco de la PC ni el sistema local (n8n/Ollama/bot).
+  El nexo es **Git**: push desde la PC → pull en la nube. La memoria (este archivo) viaja en el repo.
+- Red de la nube bloquea: Freelancer, OpenStreetMap, Malt, netlify.app → esas se corren en la PC.
 
 ---
 
