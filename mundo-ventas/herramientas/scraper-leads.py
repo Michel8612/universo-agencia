@@ -16,6 +16,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from llm import generar as llm_generar
+from notificar import aviso_lead
 
 UA = "NEXIA-LeadScraper/1.0 (contacto: teamorionglobal@gmail.com)"
 CRM_URL = "http://127.0.0.1:8080/crm/cliente"
@@ -226,6 +227,13 @@ def guardar_crm(negocio):
     try:
         req = urllib.request.Request(CRM_URL, data=payload, headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=8)
+        # Aviso interno a Slack (best-effort; solo si SLACK_WEBHOOK_URL esta configurado)
+        aviso_lead(
+            negocio["nombre"],
+            score=negocio.get("puntuacion"),
+            servicio=negocio.get("servicio", ""),
+            extra=f"{negocio['categoria']} · {negocio['direccion']} · web:{negocio['web'] or 'NO'}",
+        )
         return True
     except Exception:
         return False

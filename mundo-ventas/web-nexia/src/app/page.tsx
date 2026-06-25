@@ -8,6 +8,9 @@ const PLAZAS_FUNDADOR = 3;
 // Si lo dejas vacío, el botón flotante de WhatsApp simplemente no aparece.
 const WHATSAPP = "5356659464";
 const WHATSAPP_MSG = "Hola NEXIA, quiero mi diagnóstico web gratis.";
+// Telegram: pon el @username de tu bot SIN la "@" (ej: "NexiaAsistenteBot").
+// Abre un chat 1-a-1 directo con tu bot. Si lo dejas vacío, el botón no aparece.
+const TELEGRAM_BOT = "";
 
 // Qué recibe el cliente con el diagnóstico gratuito (concreta el gancho = más conversión)
 const DIAGNOSTICO_INCLUYE = [
@@ -412,6 +415,18 @@ export default function Home() {
             </div>
           </Reveal>
           <Reveal delay={100} className="bg-white/[0.02] border border-white/10 rounded-2xl p-8"><ContactForm /></Reveal>
+          {TELEGRAM_BOT && (
+            <Reveal delay={150} className="mt-6 text-center">
+              <p className="text-gray-500 text-sm mb-3">¿Prefieres chatear ahora mismo?</p>
+              <a href={`https://t.me/${TELEGRAM_BOT}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1b8ec2] text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M21.94 4.5L18.6 20.2c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1 .5l.36-5.13L18.05 6.5c.4-.36-.09-.56-.62-.2L6.5 13.2l-4.96-1.55c-1.08-.34-1.1-1.08.23-1.6l19.4-7.48c.9-.34 1.68.2 1.39 1.43z"/>
+                </svg>
+                Habla con nuestro asistente en Telegram
+              </a>
+            </Reveal>
+          )}
         </div>
       </section>
 
@@ -449,8 +464,17 @@ function FloatingActions() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const waHref = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(WHATSAPP_MSG)}` : null;
+  const tgHref = TELEGRAM_BOT ? `https://t.me/${TELEGRAM_BOT}` : null;
   return (
     <>
+      {tgHref && (
+        <a href={tgHref} target="_blank" rel="noopener noreferrer" aria-label="Habla con nuestro asistente en Telegram"
+          className="fixed bottom-36 right-5 z-40 w-14 h-14 rounded-full bg-[#229ED9] shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
+          <svg className="w-7 h-7" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <path d="M21.94 4.5L18.6 20.2c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1 .5l.36-5.13L18.05 6.5c.4-.36-.09-.56-.62-.2L6.5 13.2l-4.96-1.55c-1.08-.34-1.1-1.08.23-1.6l19.4-7.48c.9-.34 1.68.2 1.39 1.43z"/>
+          </svg>
+        </a>
+      )}
       {waHref && (
         <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="Escríbenos por WhatsApp"
           className="fixed bottom-20 right-5 z-40 w-14 h-14 rounded-full bg-[#25D366] shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
