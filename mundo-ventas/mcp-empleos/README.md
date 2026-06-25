@@ -31,8 +31,18 @@ Añade (ajusta la RUTA absoluta al repo):
 }
 ```
 
-Reinicia Claude Desktop. Tendrás la herramienta **`buscar_empleos`**. Pídeme cosas como:
+Reinicia Claude Desktop. Tendrás dos herramientas:
+- **`buscar_empleos`** — proyectos/gigs en Freelancer.com (presupuesto, pujas).
+- **`buscar_empleos_remoto`** — empleos/contratos remotos en Remotive (dev, diseño, marketing…).
+
+Pídeme cosas como:
 > "busca empleos de chatbot con presupuesto mínimo 300 y poca competencia"
+> "busca trabajos remotos de wordpress"
+
+### Nota sobre Upwork
+El conector de Upwork de Claude es para **clientes que contratan** (buscar/contratar
+freelancers, publicar ofertas), **no** para buscar trabajos como freelancer. Para buscar
+trabajo se usan las herramientas de arriba (Freelancer/Remotive).
 
 ## 3. Probar el servidor a mano (opcional)
 

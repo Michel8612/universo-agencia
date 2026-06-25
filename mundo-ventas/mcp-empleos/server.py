@@ -22,6 +22,7 @@ from mcp.server.fastmcp import FastMCP
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NEXIA-EmpleosMCP/1.0"
 FL_API = "https://www.freelancer.com/api/projects/0.1/projects/active/"
 FL_PROJECT = "https://www.freelancer.com/projects/"
+REMOTIVE_API = "https://remotive.com/api/remote-jobs"
 
 # Conversión aproximada a USD para comparar presupuestos
 USD = {"USD": 1, "EUR": 1.08, "GBP": 1.27, "AUD": 0.66, "CAD": 0.73, "NZD": 0.61,
@@ -92,6 +93,36 @@ def buscar_empleos(query: str, min_budget_usd: int = 100, max_competencia: int =
         lineas.append(
             f"• {t['titulo']}\n  💰 {t['presupuesto']} (~${t['usd_min']}) | 🧑‍💻 {t['pujas']} pujas | "
             f"{', '.join(t['skills'])}\n  🔗 {t['url']}"
+        )
+    return "\n".join(lineas)
+
+
+@mcp.tool()
+def buscar_empleos_remoto(query: str, limite: int = 20) -> str:
+    """
+    Busca empleos/contratos REMOTOS en Remotive (otra API abierta).
+    Bueno para roles remotos de desarrollo, diseño, marketing, soporte, etc.
+
+    Args:
+        query: término de búsqueda (ej. "react", "wordpress", "automation", "seo").
+        limite: número máximo de resultados.
+    """
+    params = urllib.parse.urlencode({"search": query, "limit": limite})
+    try:
+        data = json.loads(_get(f"{REMOTIVE_API}?{params}"))
+    except Exception as e:
+        return f"Error consultando Remotive (¿hay salida a internet en esta máquina?): {e}"
+
+    jobs = data.get("jobs", []) or []
+    if not jobs:
+        return f"Sin resultados remotos para '{query}'."
+
+    lineas = [f"{len(jobs[:limite])} empleos remotos para '{query}':\n"]
+    for j in jobs[:limite]:
+        lineas.append(
+            f"• {j.get('title', '')} — {j.get('company_name', '')}\n"
+            f"  📍 {j.get('candidate_required_location', 'Remoto')} | 💼 {j.get('job_type', '')} | "
+            f"{j.get('salary') or 'salario no indicado'}\n  🔗 {j.get('url', '')}"
         )
     return "\n".join(lineas)
 
