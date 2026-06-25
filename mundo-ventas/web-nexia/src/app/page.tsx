@@ -6,7 +6,7 @@ const EMAIL_DESTINO = "teamorionglobal@gmail.com";
 const PLAZAS_FUNDADOR = 3;
 // WhatsApp: pon tu número en formato internacional SIN "+" ni espacios (ej: "34600112233").
 // Si lo dejas vacío, el botón flotante de WhatsApp simplemente no aparece.
-const WHATSAPP = "";
+const WHATSAPP = "5356659464";
 const WHATSAPP_MSG = "Hola NEXIA, quiero mi diagnóstico web gratis.";
 
 // Qué recibe el cliente con el diagnóstico gratuito (concreta el gancho = más conversión)
