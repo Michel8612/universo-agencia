@@ -4,6 +4,20 @@ import { useState, useEffect, useRef } from "react";
 // ── CONFIG ──────────────────────────────────────────────────
 const EMAIL_DESTINO = "teamorionglobal@gmail.com";
 const PLAZAS_FUNDADOR = 3;
+// WhatsApp: pon tu número en formato internacional SIN "+" ni espacios (ej: "34600112233").
+// Si lo dejas vacío, el botón flotante de WhatsApp simplemente no aparece.
+const WHATSAPP = "";
+const WHATSAPP_MSG = "Hola NEXIA, quiero mi diagnóstico web gratis.";
+
+// Qué recibe el cliente con el diagnóstico gratuito (concreta el gancho = más conversión)
+const DIAGNOSTICO_INCLUYE = [
+  { icon: "⚡", t: "Velocidad y rendimiento", d: "Cuánto tarda en cargar y qué te está costando en visitas perdidas." },
+  { icon: "📱", t: "Experiencia en móvil", d: "Si tu web se ve y funciona bien donde está la mayoría de tus clientes." },
+  { icon: "🔍", t: "Posicionamiento (SEO)", d: "Por qué Google no te muestra y los arreglos prioritarios." },
+  { icon: "🔒", t: "Seguridad y confianza", d: "Certificado, avisos del navegador y señales que espantan clientes." },
+  { icon: "💸", t: "Puntos de fuga de ventas", d: "Dónde pierdes contactos y cómo convertir más visitas en clientes." },
+  { icon: "🗺️", t: "Plan de acción con precios", d: "Qué arreglar primero y cuánto cuesta. Tuyo aunque no contrates." },
+];
 
 // ── DATOS ───────────────────────────────────────────────────
 const NAV_LINKS = [
@@ -272,6 +286,11 @@ export default function Home() {
               <a href="#contacto" className="btn-shine bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-4 rounded-lg text-center transition-colors">Quiero mi diagnóstico gratis</a>
               <a href="#servicios" className="border border-white/15 hover:bg-white/5 text-white font-semibold px-7 py-4 rounded-lg text-center transition-colors">Ver servicios</a>
             </div>
+            <div className="anim-fadeUp d-3 flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-sm text-gray-500">
+              <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Sin tarjeta</span>
+              <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Respuesta en 24h</span>
+              <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Sin permanencia</span>
+            </div>
           </div>
           <div className="anim-fadeIn d-2 relative">
             <div className="anim-float"><MockupDashboard /></div>
@@ -378,6 +397,20 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Tu diagnóstico web gratis</h2>
             <p className="text-gray-400">Déjanos tus datos y en 24h te enviamos un informe real de tu web con qué mejorar y cuánto cuesta. Sin compromiso.</p>
           </Reveal>
+          <Reveal delay={50} className="mb-10">
+            <p className="text-center text-xs uppercase tracking-widest text-gray-500 mb-5">Qué analizamos por ti</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {DIAGNOSTICO_INCLUYE.map((d) => (
+                <div key={d.t} className="flex gap-3 bg-white/[0.02] border border-white/10 rounded-xl p-4">
+                  <span className="text-xl shrink-0">{d.icon}</span>
+                  <div>
+                    <h3 className="font-semibold text-sm text-white">{d.t}</h3>
+                    <p className="text-gray-400 text-xs leading-relaxed mt-0.5">{d.d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
           <Reveal delay={100} className="bg-white/[0.02] border border-white/10 rounded-2xl p-8"><ContactForm /></Reveal>
         </div>
       </section>
@@ -401,8 +434,38 @@ export default function Home() {
         </div>
       </footer>
 
+      <FloatingActions />
       <CookieBanner />
     </main>
+  );
+}
+
+// ── ACCIONES FLOTANTES (WhatsApp + CTA fija en móvil) ────────
+function FloatingActions() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 500);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  const waHref = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(WHATSAPP_MSG)}` : null;
+  return (
+    <>
+      {waHref && (
+        <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="Escríbenos por WhatsApp"
+          className="fixed bottom-20 right-5 z-40 w-14 h-14 rounded-full bg-[#25D366] shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
+          <svg className="w-7 h-7" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.06c-.24.68-1.4 1.3-1.93 1.38-.49.07-1.12.1-1.8-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.76-4.14-4.9-4.33-.14-.19-1.17-1.56-1.17-2.97 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36h.55c.18 0 .42-.07.65.5.24.58.82 2 .89 2.14.07.14.12.31.02.5-.1.19-.14.31-.29.48-.14.17-.3.38-.43.51-.14.14-.29.29-.12.58.17.29.74 1.22 1.59 1.98 1.1.98 2.02 1.28 2.31 1.43.29.14.46.12.63-.07.17-.19.72-.84.91-1.13.19-.29.39-.24.65-.14.26.1 1.67.79 1.96.93.29.14.48.22.55.34.07.12.07.7-.17 1.38z"/>
+          </svg>
+        </a>
+      )}
+      {/* Barra CTA fija solo en móvil, aparece tras hacer scroll */}
+      <div className={`md:hidden fixed bottom-0 inset-x-0 z-30 p-3 bg-[#08080c]/95 backdrop-blur-md border-t border-white/10 transition-transform duration-300 ${show ? "translate-y-0" : "translate-y-full"}`}>
+        <a href="#contacto" className="block bg-blue-600 hover:bg-blue-500 text-white text-center font-semibold py-3 rounded-lg">
+          Quiero mi diagnóstico gratis →
+        </a>
+      </div>
+    </>
   );
 }
 

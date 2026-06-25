@@ -1,6 +1,28 @@
 # Estado Actual de la Agencia — NEXIA
 
-**Última actualización:** 2026-06-24
+**Última actualización:** 2026-06-25
+
+---
+
+## 🆕 SESIÓN 2026-06-25 (rama claude/focused-ride-801h71)
+
+- **Groq integrado en las herramientas de ventas** (con fallback a Ollama):
+  nuevo `mundo-ventas/herramientas/llm.py`. Si hay `GROQ_API_KEY` usa Groq
+  (rápido, gratis, funciona en cualquier máquina/VPS); si no, cae a Ollama local.
+  Refactorizados: buscar-trabajos, diagnostico-web, scraper-leads, campana-leads,
+  generar-propuesta. `.env.example` ampliado con `GROQ_*` / `OLLAMA_*`.
+- **Guía OpenClaw + Groq**: `mundo-agencia/OPENCLAW-GROQ.md` (pasos para conectar
+  Groq en OpenClaw en la PC de EE.UU. + en las herramientas Python).
+- **Landing optimizada para conversión** (`web-nexia/src/app/page.tsx`):
+  bloque "qué incluye tu diagnóstico", línea de confianza en el hero
+  (sin tarjeta / 24h / sin permanencia), botón flotante de WhatsApp (configurable
+  con la constante `WHATSAPP`) y barra CTA fija en móvil. Build verificado OK.
+- **Limpieza repo**: des-trackeados `web-nexia/.next` y `web-nexia/out` (artefactos
+  de build que estaban commiteados por error; Netlify ya hace `npm run build`).
+- ⚠️ PENDIENTE de TI: poner número en la constante `WHATSAPP` de la landing;
+  crear la `GROQ_API_KEY` en https://console.groq.com/keys y configurarla en
+  OpenClaw + en `.env`. La caza de leads/trabajos en vivo se corre en tu PC/VPS
+  (la red del entorno cloud de Claude bloquea Freelancer/OSM).
 
 ---
 

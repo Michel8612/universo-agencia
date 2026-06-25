@@ -25,7 +25,9 @@ except Exception:
     pass
 
 HERE = os.path.dirname(__file__)
-OLLAMA = "http://localhost:11434/api/generate"
+sys.path.insert(0, os.path.abspath(HERE))
+from llm import generar as llm_generar
+
 CRM_URL = "http://127.0.0.1:8080/crm/cliente"
 STATE_PATH = os.path.join(HERE, "..", "campana-estado.json")
 OUT_DIR = os.path.join(HERE, "..", "campanas")
@@ -77,10 +79,8 @@ El email debe:
 Devuelve formato:
 ASUNTO: ...
 CUERPO: ..."""
-    body = json.dumps({"model": "qwen2.5:14b", "prompt": prompt, "stream": False}).encode()
     try:
-        req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
-        return json.loads(urllib.request.urlopen(req, timeout=120).read())["response"].strip()
+        return llm_generar(prompt, temperature=0.7)
     except Exception as e:
         return f"(no se pudo generar: {e})"
 

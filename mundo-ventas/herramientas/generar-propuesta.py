@@ -2,11 +2,13 @@
 NEXIA — Generador de Propuestas Comerciales
 Uso: python generar-propuesta.py --empresa "Clínica García" --sector "salud" --presupuesto 1497
 """
-import argparse, json, urllib.request, datetime
+import argparse, json, datetime, os, sys
 from pathlib import Path
 
-OLLAMA = "http://localhost:11434/api/generate"
-OUT_DIR = Path(r"D:\Proyectos claude\mundo-ventas\propuestas")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from llm import generar as llm_generar
+
+OUT_DIR = Path(__file__).resolve().parent.parent / "propuestas"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 PAQUETES = {
@@ -14,16 +16,6 @@ PAQUETES = {
     1497: ("Growth",       "App web completa + dashboard",    "3 semanas"),
     4997: ("Agency Pro",   "Sistema a medida + integración",  "6 semanas"),
 }
-
-def ollama(prompt):
-    req = urllib.request.Request(OLLAMA,
-        data=json.dumps({
-            "model": "qwen2.5:14b", "prompt": prompt, "stream": False,
-            "options": {"temperature": 0.7, "num_predict": 1000}
-        }).encode(),
-        headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=300) as r:
-        return json.loads(r.read())["response"]
 
 def generar(empresa, sector, presupuesto, contacto="", necesidad=""):
     paquete_key = min(PAQUETES.keys(), key=lambda k: abs(k - presupuesto))
@@ -81,7 +73,7 @@ ESTRUCTURA OBLIGATORIA:
 Escribe la propuesta completa, profesional y convincente. Adapta el contenido al sector {sector}."""
 
     print(f"Generando propuesta para {empresa} ({sector}, {presupuesto}€)...")
-    contenido = ollama(prompt)
+    contenido = llm_generar(prompt, temperature=0.7, max_tokens=1000, timeout=300)
 
     fecha = datetime.date.today().isoformat()
     nombre_archivo = f"propuesta_{empresa.lower().replace(' ','_').replace('/','_')}_{fecha}.md"
