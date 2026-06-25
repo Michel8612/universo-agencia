@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taíno Labs · Stop losing the leads you already paid for</title>
+<meta name="description" content="Every lead you don't answer in time goes to your competitor. Taíno Labs responds and qualifies every contact in seconds, 24/7. Calculate what you're losing and try it for 14 days.">
+<meta property="og:title" content="Taíno Labs · Stop losing the leads you already paid for">
+<meta property="og:description" content="A system that responds and qualifies every lead in seconds, 24/7.">
+<meta property="og:type" content="website">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap');
+  :root{
+    --bg:#fbfbfa;--ink:#16181d;--soft:#5b6270;--line:#e6e7ea;--card:#fff;
+    --accent:#1d4ed8;--accent-dk:#1a3fb0;--loss:#c0392b;--loss-bg:#fdf3f2;--loss-line:#f1d9d6;
+    --mint:#0f9d6b;--mint-bg:#eefaf4;--wa:#25d366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+  h1,h2,h3{font-family:'Newsreader',Georgia,serif;font-weight:500;letter-spacing:-.4px;line-height:1.12}
+  .serif{font-family:'Newsreader',serif}
+  .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+  .btn{display:inline-block;border:none;border-radius:10px;padding:14px 26px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;transition:.15s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-dk)}
+  .btn-light{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-light:hover{border-color:var(--accent)}
+  .btn-wa{background:var(--wa);color:#fff}
+  .btn-wa:hover{filter:brightness(.95)}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(251,251,250,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px}
+  .logo .dot{width:26px;height:26px;border-radius:7px;background:linear-gradient(145deg,var(--accent),#3b6fe0);display:grid;place-items:center;color:#fff;font-size:13px}
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .lang button{border:none;background:#fff;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--soft)}
+  .lang button.on{background:var(--accent);color:#fff}
+  .nav-cta{font-size:14px}
+  @media(max-width:560px){.nav-cta{display:none}}
+
+  .hero{padding:clamp(48px,8vw,86px) 0 clamp(36px,6vw,60px)}
+  .hero h1{font-size:clamp(32px,6vw,56px);max-width:790px;margin:18px 0 0}
+  .hero p{font-size:clamp(16px,2.4vw,19px);color:var(--soft);max-width:570px;margin:20px 0 30px}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+  section{padding:clamp(44px,7vw,76px) 0}
+  .sec-head{max-width:640px;margin-bottom:40px}
+  .sec-head h2{font-size:clamp(26px,4.5vw,38px);margin:12px 0 14px}
+  .sec-head p{font-size:16.5px;color:var(--soft)}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .step .num{font-family:'Newsreader',serif;font-size:34px;color:var(--accent);line-height:1}
+  .step h3{font-size:19px;margin:14px 0 8px}
+  .step p{font-size:14.5px;color:var(--soft)}
+  .step.bad .num{color:var(--loss)}
+
+  #calc{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .calc-niches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+  .nbtn{padding:9px 15px;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;background:#fff;color:var(--ink);border:1px solid var(--line);transition:.15s}
+  .nbtn:hover{border-color:var(--accent)}
+  .nbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .calc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px}
+  .calc-card{border:1px solid var(--line);border-radius:16px;padding:26px}
+  .calc-loss{background:var(--loss-bg);border-color:var(--loss-line);display:flex;flex-direction:column}
+  .field{margin-bottom:22px}.field:last-child{margin-bottom:0}
+  .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .field label{font-size:14px;font-weight:500}
+  .field .v{font-size:15px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:99px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff}
+  .loss-label{font-size:13px;font-weight:600;color:var(--loss);text-transform:uppercase;letter-spacing:1px}
+  .loss-big{font-family:'Newsreader',serif;font-size:clamp(42px,8vw,68px);line-height:1;color:var(--loss);margin:10px 0 6px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+  .loss-sub{font-size:14.5px;color:var(--soft);margin-bottom:22px}
+  .loss-rows{margin-top:auto}
+  .lrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--loss-line)}
+  .lrow span{font-size:14px;color:var(--soft)}.lrow b{font-size:16px;font-variant-numeric:tabular-nums}
+  .lrow.strong span{color:var(--ink);font-weight:600}.lrow.strong b{color:var(--loss)}
+  .calc-note{font-size:12.5px;color:var(--soft);margin-top:18px;padding-top:16px;border-top:1px solid var(--line);line-height:1.5}
+
+  .demo{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,3vw,30px);margin-top:8px}
+  .demo-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .demo-head .live{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--soft);font-weight:500}
+  .live .pd{width:8px;height:8px;border-radius:50%;background:var(--mint);animation:pl 2s infinite}
+  @keyframes pl{0%{box-shadow:0 0 0 0 rgba(15,157,107,.4)}70%{box-shadow:0 0 0 7px rgba(15,157,107,0)}100%{box-shadow:0 0 0 0 rgba(15,157,107,0)}}
+  .flow{display:flex;flex-direction:column;gap:0}
+  .fstage{display:grid;grid-template-columns:34px 1fr;gap:14px;position:relative}
+  .fstage:not(:last-child)::before{content:'';position:absolute;left:16px;top:34px;bottom:-2px;width:2px;background:var(--line)}
+  .fstage.lit:not(:last-child)::before{background:linear-gradient(var(--accent),var(--line))}
+  .fnode{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:#f3f4f7;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--soft);transition:.4s;z-index:1}
+  .fstage.lit .fnode{background:var(--accent);border-color:var(--accent);color:#fff}
+  .fstage.done .fnode{background:var(--mint-bg);border-color:var(--mint);color:var(--mint)}
+  .fbody{padding-bottom:20px;min-width:0}
+  .fbody .ft{font-size:15px;font-weight:600}.fbody .fd{font-size:13.5px;color:var(--soft);margin-top:2px}
+  .fai{margin-top:8px;font-size:13px;color:var(--accent);background:#eef2fd;border-radius:9px;padding:9px 12px;line-height:1.5;max-height:0;opacity:0;overflow:hidden;transition:.45s}
+  .fstage.lit .fai,.fstage.done .fai{max-height:130px;opacity:1}
+  .demo-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+  .dm{background:#f7f8fa;border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+  .dm .dl{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--soft);font-weight:600}
+  .dm .dv{font-size:24px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums}
+  .dm.money .dv{color:var(--mint)}
+
+  .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .ben{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .ben .ic{width:38px;height:38px;border-radius:10px;background:var(--mint-bg);display:grid;place-items:center;flex-shrink:0;font-size:18px}
+  .ben h3{font-size:17px;margin-bottom:5px}.ben p{font-size:14px;color:var(--soft)}
+
+  /* Formulario */
+  #contacto{background:#fff;border-top:1px solid var(--line)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+  .form-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}
+  .fg{margin-bottom:16px}
+  .fg label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .fg input,.fg select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
+  .fg input:focus,.fg select:focus{outline:none;border-color:var(--accent)}
+  .consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--soft);line-height:1.5;margin:6px 0 18px}
+  .consent input{margin-top:3px;flex-shrink:0}
+  .or{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--soft);font-size:13px}
+  .or::before,.or::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  .final{background:var(--ink);border-radius:20px;padding:clamp(32px,5vw,52px);text-align:center;color:#fff}
+  .final h2{font-size:clamp(26px,4.5vw,40px);color:#fff;max-width:640px;margin:0 auto 14px}
+  .final p{font-size:16.5px;color:#aab0bd;max-width:540px;margin:0 auto 28px}
+  .guarantee{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:8px 16px;font-size:13.5px;color:#dfe3ea;margin-top:22px}
+
+  footer{padding:40px 0;border-top:1px solid var(--line);text-align:center;color:var(--soft);font-size:13.5px}
+
+  /* Botón flotante WhatsApp */
+  .wa-float{position:fixed;right:18px;bottom:18px;z-index:60;width:56px;height:56px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 6px 20px rgba(37,211,102,.45);text-decoration:none;transition:.15s}
+  .wa-float:hover{transform:scale(1.06)}
+  .wa-float svg{width:30px;height:30px;fill:#fff}
+
+  @media(max-width:760px){
+    .steps{grid-template-columns:1fr}.calc-grid{grid-template-columns:1fr}
+    .benefits{grid-template-columns:1fr}.demo-metrics{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr;gap:24px}
+  }
+  [data-show]{display:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="logo"><span class="dot">◆</span> Taíno Labs</div>
+    <div class="nav-right">
+      <div class="lang">
+        <button data-lang="en" id="lng-en">EN</button>
+        <button data-lang="es" id="lng-es">ES</button>
+      </div>
+      <a href="#contacto" class="btn btn-primary nav-cta" data-t="nav_cta"></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow" data-t="hero_eyebrow"></div>
+    <h1 class="serif" data-t="hero_title"></h1>
+    <p data-t="hero_sub"></p>
+    <div class="hero-actions">
+      <a href="#calc" class="btn btn-primary" data-t="hero_btn1"></a>
+      <a href="#solucion" class="btn btn-light" data-t="hero_btn2"></a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-t="prob_eyebrow"></div>
+      <h2 class="serif" data-t="prob_title"></h2>
+      <p data-t="prob_sub"></p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3 data-t="prob1_t"></h3><p data-t="prob1_d"></p></div>
+      <div class="step"><div class="num">2</div><h3 data-t="prob2_t"></h3><p data-t="prob2_d"></p></div>
+      <div class="step bad"><div class="num">3</div><h3 data-t="prob3_t"></h3><p data-t="prob3_d"></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="calc">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-t="calc_eyebrow"></div>
+      <h2 class="serif" data-t="calc_title"></h2>
+      <p data-t="calc_sub"></p>
+    </div>
+    <div class="calc-niches" id="niches"></div>
+    <div class="calc-grid">
+      <div class="calc-card">
+        <div class="field"><div class="field-top"><label data-t="f_leads"></label><span class="v" id="v-leads"></span></div><input type="range" id="r-leads" min="10" max="300" step="5"></div>
+        <div class="field"><div class="field-top"><label data-t="f_cpl"></label><span class="v" id="v-cpl"></span></div><input type="range" id="r-cpl" min="20" max="500" step="5"></div>
+        <div class="field"><div class="field-top"><label data-t="f_value"></label><span class="v" id="v-value"></span></div><input type="range" id="r-value" min="300" max="20000" step="100"></div>
+        <div class="field"><div class="field-top"><label data-t="f_conv"></label><span class="v" id="v-conv"></span></div><input type="range" id="r-conv" min="5" max="60" step="1"></div>
+        <div class="field"><div class="field-top"><label data-t="f_lost"></label><span class="v" id="v-lost"></span></div><input type="range" id="r-lost" min="5" max="70" step="1"></div>
+        <p class="calc-note" data-t="calc_note"></p>
+      </div>
+      <div class="calc-card calc-loss">
+        <div class="loss-label" data-t="loss_label"></div>
+        <div class="loss-big" id="o-annual">$0</div>
+        <div class="loss-sub"><span data-t="loss_eq"></span> <b id="o-monthly" style="color:var(--ink)">$0</b> <span data-t="loss_eq2"></span></div>
+        <div class="loss-rows">
+          <div class="lrow"><span data-t="loss_r1"></span><b id="o-leads">0</b></div>
+          <div class="lrow"><span data-t="loss_r2"></span><b id="o-adwaste">$0</b></div>
+          <div class="lrow"><span data-t="loss_r3"></span><b id="o-revlost">$0</b></div>
+          <div class="lrow strong"><span data-t="loss_r4"></span><b id="o-deals">0</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solucion">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-t="sol_eyebrow"></div>
+      <h2 class="serif" data-t="sol_title"></h2>
+      <p data-t="sol_sub"></p>
+    </div>
+    <div class="demo">
+      <div class="demo-head">
+        <strong style="font-size:15px" data-t="demo_head"></strong>
+        <div class="live"><span class="pd"></span> <span data-t="demo_live"></span></div>
+      </div>
+      <div class="demo-metrics">
+        <div class="dm"><div class="dl" data-t="dm1"></div><div class="dv" id="d-leads">0</div></div>
+        <div class="dm"><div class="dl" data-t="dm2"></div><div class="dv">4.2s</div></div>
+        <div class="dm money"><div class="dl" data-t="dm3"></div><div class="dv" id="d-money">$0</div></div>
+      </div>
+      <div class="flow" id="flow">
+        <div class="fstage"><div class="fnode">1</div><div class="fbody"><div class="ft" data-t="fs1_t"></div><div class="fd" data-t="fs1_d"></div><div class="fai"></div></div></div>
+        <div class="fstage"><div class="fnode">2</div><div class="fbody"><div class="ft" data-t="fs2_t"></div><div class="fd" data-t="fs2_d"></div><div class="fai"></div></div></div>
+        <div class="fstage"><div class="fnode">3</div><div class="fbody"><div class="ft" data-t="fs3_t"></div><div class="fd" data-t="fs3_d"></div><div class="fai"></div></div></div>
+        <div class="fstage"><div class="fnode">4</div><div class="fbody"><div class="ft" data-t="fs4_t"></div><div class="fd" data-t="fs4_d"></div><div class="fai"></div></div></div>
+      </div>
+    </div>
+    <div class="benefits" style="margin-top:22px">
+      <div class="ben"><div class="ic">⚡</div><div><h3 data-t="ben1_t"></h3><p data-t="ben1_d"></p></div></div>
+      <div class="ben"><div class="ic">🎯</div><div><h3 data-t="ben2_t"></h3><p data-t="ben2_d"></p></div></div>
+      <div class="ben"><div class="ic">📅</div><div><h3 data-t="ben3_t"></h3><p data-t="ben3_d"></p></div></div>
+      <div class="ben"><div class="ic">🔌</div><div><h3 data-t="ben4_t"></h3><p data-t="ben4_d"></p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-t="cont_eyebrow"></div>
+      <h2 class="serif" data-t="cont_title"></h2>
+      <p data-t="cont_sub"></p>
+    </div>
+    <div class="form-grid">
+      <div class="form-card">
+        <!-- Netlify Forms: data-netlify="true" hace que Netlify capture los envíos automáticamente -->
+        <form name="leads" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="leads">
+          <p style="display:none"><label>No llenar: <input name="bot-field"></label></p>
+          <div class="fg"><label data-t="form_name"></label><input type="text" name="nombre" required></div>
+          <div class="fg"><label data-t="form_business"></label><input type="text" name="negocio" required></div>
+          <div class="fg"><label data-t="form_sector"></label>
+            <select name="sector" id="form-sector"></select>
+          </div>
+          <div class="fg"><label data-t="form_contact"></label><input type="text" name="contacto" placeholder="WhatsApp / email" required></div>
+          <label class="consent">
+            <input type="checkbox" name="consentimiento" required>
+            <span data-t="form_consent"></span>
+          </label>
+          <button type="submit" class="btn btn-primary" style="width:100%" data-t="form_submit"></button>
+        </form>
+        <div class="or"><span data-t="form_or"></span></div>
+        <a id="wa-btn" class="btn btn-wa" style="width:100%;text-align:center" data-t="form_wa"></a>
+      </div>
+      <div>
+        <div class="final">
+          <div class="eyebrow" style="color:#7ea3f5" data-t="final_eyebrow"></div>
+          <h2 class="serif" id="final-headline"></h2>
+          <p data-t="final_sub"></p>
+          <a href="#contacto" class="btn btn-light" data-t="final_btn"></a>
+          <div class="guarantee">🛡️ <span data-t="final_guarantee"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <strong>Taíno Labs</strong> · <span data-t="footer_tag"></span><br>
+    <span style="font-size:12.5px" data-t="footer_disc"></span>
+  </div>
+</footer>
+
+<a class="wa-float" id="wa-float" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.8-2.8-1.5-3.9-3.4-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.8.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 21.5c-1.7 0-3.3-.5-4.7-1.3l-3.3.9.9-3.2c-.9-1.5-1.4-3.2-1.4-5C3.5 7.3 7.3 3.5 12 3.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5m0-18.5C6.2 3 1.5 7.7 1.5 13.5c0 1.9.5 3.7 1.4 5.3L1.5 24l5.4-1.4c1.5.8 3.2 1.3 5.1 1.3 5.8 0 10.5-4.7 10.5-10.5S17.8 3 12 3"/></svg>
+</a>
+
+<script>
+(function(){
+  var WA_NUMBER="5356659464"; // tu WhatsApp Business
+
+  // ---------- Traducciones ----------
+  var T={
+    en:{
+      nav_cta:"Try 14 days",
+      hero_eyebrow:"Lead capture & instant response",
+      hero_title:"Every lead you don't answer in time goes to your competitor.",
+      hero_sub:"You already paid for those contacts. Taíno Labs answers and qualifies them in seconds, around the clock, so none of them cools off waiting.",
+      hero_btn1:"Calculate what I'm losing", hero_btn2:"See how it works",
+      prob_eyebrow:"The problem", prob_title:"You invest in attracting customers. Then you lose them in silence.",
+      prob_sub:"It's not a lack of leads. It's what happens in the minutes after someone raises their hand.",
+      prob1_t:"You pay for every contact", prob1_d:"Ads, website, referrals. Every lead that comes in already cost money to get.",
+      prob2_t:"The response is slow", prob2_d:"It arrives after hours, nobody picks up the phone, or the team is busy. Hours go by.",
+      prob3_t:"They go with someone else", prob3_d:"The customer won't wait: they call the next one. The money you spent attracting them evaporates.",
+      calc_eyebrow:"Your situation, in numbers", calc_title:"How much does responding late cost you?",
+      calc_sub:"Pick your industry and adjust the values to your reality. Starting figures come from U.S. industry averages (2026).",
+      f_leads:"Leads you receive per month", f_cpl:"Cost per lead (advertising)", f_value:"Value of a closed customer",
+      f_conv:"Out of 100 leads, how many you close", f_lost:"Leads lost from responding late",
+      calc_note:"Rough estimate. Adjust each value to your real operation for a more accurate figure.",
+      loss_label:"You lose every year", loss_eq:"that's", loss_eq2:"every month it goes unsolved.",
+      loss_r1:"Leads lost per month", loss_r2:"Ad spend wasted / month", loss_r3:"Revenue not closed / month", loss_r4:"Customers lost per year",
+      sol_eyebrow:"The solution", sol_title:"An assistant that handles every lead instantly, for you.",
+      sol_sub:"Watch what happens, in real time, every time a new contact comes in. Without you lifting a finger.",
+      demo_head:"A lead's journey, live", demo_live:"Working on its own",
+      dm1:"Leads handled today", dm2:"Response time", dm3:"Revenue recovered",
+      fs1_t:"The contact comes in", fs1_d:"Call, form or message. The system detects it instantly.",
+      fs2_t:"It understands the need", fs2_d:"Reads the message and decides the best action.",
+      fs3_t:"Responds in seconds", fs3_d:"Replies with a personalized message. The customer feels attended.",
+      fs4_t:"Closes the action", fs4_d:"Books the appointment or hands the qualified lead to your team.",
+      ben1_t:"Answers even when you're closed", ben1_d:"Nights, weekends, rush hour. The first to reply almost always wins the customer.",
+      ben2_t:"Filters the ones worth it", ben2_d:"Asks the right questions and passes you only serious, pre-qualified leads.",
+      ben3_t:"Books without intervention", ben3_d:"Schedules the appointment straight into your calendar. You wake up to a full agenda.",
+      ben4_t:"Works with what you already use", ben4_d:"Connects to your website, WhatsApp and calendar. No change to how you work.",
+      cont_eyebrow:"Start now", cont_title:"Tell us about your business.",
+      cont_sub:"Leave your details and we'll show you, with your own numbers, how much you could recover. No commitment.",
+      form_name:"Your name", form_business:"Business name", form_sector:"Industry",
+      form_contact:"Best way to reach you", form_consent:"I agree to be contacted by Taíno Labs about this service.",
+      form_submit:"Send and see my numbers", form_or:"or", form_wa:"Message us on WhatsApp",
+      final_eyebrow:"No risk", final_sub:"Try it 14 days with your own leads. If you don't see the difference, you pay nothing.",
+      final_btn:"Start my 14-day trial", final_guarantee:"14-day trial · No card · No lock-in",
+      footer_tag:"Technology that works while you sleep",
+      footer_disc:"Estimates based on industry averages. Real results vary by business.",
+      wa_msg:"Hi Taíno Labs, I'm interested in the lead response system."
+    },
+    es:{
+      nav_cta:"Probar 14 días",
+      hero_eyebrow:"Captación y respuesta instantánea de leads",
+      hero_title:"Cada lead que no contestas a tiempo se va con tu competencia.",
+      hero_sub:"Ya pagaste por esos contactos. Taíno Labs los responde y califica en segundos, las 24 horas, para que ninguno se enfríe esperando.",
+      hero_btn1:"Calcular lo que pierdo", hero_btn2:"Ver cómo funciona",
+      prob_eyebrow:"El problema", prob_title:"Inviertes en atraer clientes. Luego los pierdes en silencio.",
+      prob_sub:"No es por falta de leads. Es por lo que pasa en los minutos siguientes a que uno levanta la mano.",
+      prob1_t:"Pagas por cada contacto", prob1_d:"Anuncios, web, referidos. Cada lead que entra ya costó dinero conseguirlo.",
+      prob2_t:"La respuesta tarda", prob2_d:"Llega fuera de horario, nadie contesta el teléfono, o el equipo está ocupado. Pasan horas.",
+      prob3_t:"Se va con otro", prob3_d:"El cliente no espera: llama al siguiente. El dinero que invertiste en atraerlo se evapora.",
+      calc_eyebrow:"Tu situación, en números", calc_title:"¿Cuánto te cuesta responder tarde?",
+      calc_sub:"Elige tu sector y ajusta los valores a tu realidad. Las cifras de partida vienen de promedios del sector en EE. UU. (2026).",
+      f_leads:"Leads que recibes al mes", f_cpl:"Costo por lead (publicidad)", f_value:"Valor de un cliente cerrado",
+      f_conv:"De cada 100 leads, cuántos cierras", f_lost:"Leads que pierdes por responder tarde",
+      calc_note:"Estimación orientativa. Ajusta cada valor a tu operación real para un cálculo más fiel.",
+      loss_label:"Pierdes cada año", loss_eq:"equivale a", loss_eq2:"cada mes que pasa sin resolverlo.",
+      loss_r1:"Leads perdidos al mes", loss_r2:"Publicidad desperdiciada / mes", loss_r3:"Ingreso no cerrado / mes", loss_r4:"Clientes perdidos al año",
+      sol_eyebrow:"La solución", sol_title:"Un asistente que atiende cada lead al instante, por ti.",
+      sol_sub:"Mira lo que ocurre, en tiempo real, cada vez que entra un contacto nuevo. Sin que tú muevas un dedo.",
+      demo_head:"Recorrido de un lead en vivo", demo_live:"Trabajando solo",
+      dm1:"Leads atendidos hoy", dm2:"Tiempo de respuesta", dm3:"Ingreso recuperado",
+      fs1_t:"Entra el contacto", fs1_d:"Llamada, formulario o mensaje. El sistema lo detecta al instante.",
+      fs2_t:"Entiende qué necesita", fs2_d:"Lee el mensaje y decide la mejor acción.",
+      fs3_t:"Responde en segundos", fs3_d:"Contesta con un mensaje personalizado. El cliente se siente atendido.",
+      fs4_t:"Cierra la acción", fs4_d:"Agenda la cita o pasa el lead listo a tu equipo.",
+      ben1_t:"Responde aunque estés cerrado", ben1_d:"Noches, fines de semana, hora punta. El primero en contestar casi siempre gana al cliente.",
+      ben2_t:"Filtra a los que valen", ben2_d:"Hace las preguntas correctas y te pasa solo los leads serios, ya calificados.",
+      ben3_t:"Agenda sin intervención", ben3_d:"Reserva la cita directamente en tu calendario. Te despiertas con la agenda llena.",
+      ben4_t:"Funciona con lo que ya usas", ben4_d:"Se conecta a tu web, tu WhatsApp y tu calendario. Sin cambiar tu forma de trabajar.",
+      cont_eyebrow:"Empieza ahora", cont_title:"Cuéntanos sobre tu negocio.",
+      cont_sub:"Déjanos tus datos y te mostramos, con tus propios números, cuánto podrías recuperar. Sin compromiso.",
+      form_name:"Tu nombre", form_business:"Nombre del negocio", form_sector:"Sector",
+      form_contact:"Mejor forma de contactarte", form_consent:"Acepto que Taíno Labs me contacte sobre este servicio.",
+      form_submit:"Enviar y ver mis números", form_or:"o", form_wa:"Escríbenos por WhatsApp",
+      final_eyebrow:"Sin riesgo", final_sub:"Pruébalo 14 días con tus propios leads. Si no ves la diferencia, no pagas nada.",
+      final_btn:"Empezar mi prueba de 14 días", final_guarantee:"14 días de prueba · Sin tarjeta · Sin permanencia",
+      footer_tag:"Tecnología que trabaja mientras tú duermes",
+      footer_disc:"Estimaciones basadas en promedios del sector. Los resultados reales varían según cada negocio.",
+      wa_msg:"Hola Taíno Labs, me interesa el sistema de respuesta de leads."
+    }
+  };
+
+  var NICHES={
+    solar:{en:"Solar / Renewables",es:"Solar / Renovables",leads:50,cpl:180,value:9000,conv:15,lost:20},
+    hvac:{en:"HVAC",es:"HVAC / Climatización",leads:80,cpl:153,value:7000,conv:25,lost:18},
+    dental:{en:"Dental clinic",es:"Clínica dental",leads:60,cpl:165,value:1200,conv:35,lost:22},
+    legal:{en:"Law firm",es:"Despacho de abogados",leads:40,cpl:250,value:6500,conv:20,lost:18},
+    finance:{en:"Financial services",es:"Servicios financieros",leads:35,cpl:200,value:5000,conv:18,lost:18},
+    home:{en:"Home services",es:"Servicios para el hogar",leads:90,cpl:90,value:2500,conv:30,lost:20}
+  };
+  var order=["solar","hvac","dental","legal","finance","home"];
+  var current="solar", lang="en";
+
+  var $=function(id){return document.getElementById(id);};
+  function fmt(n){return "$"+Math.round(n).toLocaleString("en-US");}
+  function fmtK(n){return n>=1000?"$"+(n/1000).toFixed(n>=10000?0:1)+"K":"$"+Math.round(n);}
+
+  // Detección automática de idioma
+  var nav=(navigator.language||"en").toLowerCase();
+  lang = nav.indexOf("es")===0 ? "es" : "en";
+
+  function applyLang(l){
+    lang=l;
+    document.documentElement.lang=l;
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k=el.getAttribute("data-t"); if(T[l][k]!==undefined) el.textContent=T[l][k];
+    });
+    $("lng-en").classList.toggle("on",l==="en");
+    $("lng-es").classList.toggle("on",l==="es");
+    // Reconstruir botones de nicho y selector con el idioma
+    buildNiches(); buildSectorSelect();
+    // WhatsApp links con mensaje en el idioma
+    var waMsg=encodeURIComponent(T[l].wa_msg);
+    var waUrl="https://wa.me/"+WA_NUMBER+"?text="+waMsg;
+    $("wa-btn").href=waUrl; $("wa-float").href=waUrl;
+    recalc();
+  }
+
+  function buildNiches(){
+    var el=$("niches"); el.innerHTML="";
+    order.forEach(function(k){
+      var b=document.createElement("button");
+      b.className="nbtn"+(k===current?" on":"");
+      b.textContent=NICHES[k][lang];
+      b.onclick=function(){ current=k; applyNiche(k); document.querySelectorAll(".nbtn").forEach(function(x){x.classList.remove("on");}); b.classList.add("on"); };
+      el.appendChild(b);
+    });
+  }
+  function buildSectorSelect(){
+    var s=$("form-sector"); s.innerHTML="";
+    order.forEach(function(k){
+      var o=document.createElement("option"); o.value=k; o.textContent=NICHES[k][lang]; s.appendChild(o);
+    });
+    s.value=current;
+  }
+
+  var R={leads:$("r-leads"),cpl:$("r-cpl"),value:$("r-value"),conv:$("r-conv"),lost:$("r-lost")};
+  function applyNiche(k){var n=NICHES[k];R.leads.value=n.leads;R.cpl.value=n.cpl;R.value.value=n.value;R.conv.value=n.conv;R.lost.value=n.lost;$("form-sector").value=k;recalc();}
+
+  function recalc(){
+    var leads=+R.leads.value,cpl=+R.cpl.value,value=+R.value.value,conv=+R.conv.value,lost=+R.lost.value;
+    $("v-leads").textContent=leads;$("v-cpl").textContent=fmt(cpl);$("v-value").textContent=fmt(value);
+    $("v-conv").textContent=conv+"%";$("v-lost").textContent=lost+"%";
+    var ll=leads*(lost/100),aw=ll*cpl,dl=ll*(conv/100),rl=dl*value,m=aw+rl,an=m*12;
+    $("o-annual").textContent=fmt(an);$("o-monthly").textContent=fmt(m);
+    $("o-leads").textContent=Math.round(ll);$("o-adwaste").textContent=fmtK(aw);
+    $("o-revlost").textContent=fmtK(rl);$("o-deals").textContent=Math.round(dl*12);
+    var fh=lang==="en"?("Recover most of that "+fmt(an)+"."):("Recupera la mayor parte de esos "+fmt(an)+".");
+    $("final-headline").textContent=fh;
+  }
+
+  Object.keys(R).forEach(function(k){R[k].addEventListener("input",recalc);});
+  $("lng-en").onclick=function(){applyLang("en");};
+  $("lng-es").onclick=function(){applyLang("es");};
+
+  // Demo
+  var SC={
+    en:[
+      {who:"Web form · Maria G.",value:1200,ai:["Information request from the website.","Wants to compare prices. Worth qualifying.","Message with 3 key questions to understand the need.","Qualified 8/10. Passed to your team with a summary."]},
+      {who:"Missed call · new customer",value:850,ai:["Unanswered call after hours.","New customer wants a quote. High priority.","Automatic SMS offering to book a visit.","Replied. Appointment booked for Thursday 10:00."]},
+      {who:"WhatsApp · incoming inquiry",value:600,ai:["Initial inquiry via WhatsApp.","Service inquiry. Respond fast.","Immediate reply with availability.","Discovery appointment booked and confirmed."]}
+    ],
+    es:[
+      {who:"Formulario web · María G.",value:1200,ai:["Solicitud de información desde la página.","Quiere comparar precios. Vale la pena calificar.","Mensaje con 3 preguntas clave para entender su necesidad.","Calificado 8/10. Pasado a tu equipo con resumen."]},
+      {who:"Llamada perdida · cliente nuevo",value:850,ai:["Llamada no contestada fuera de horario.","Cliente nuevo quiere presupuesto. Prioridad alta.","SMS automático ofreciendo agendar una visita.","Respondió. Cita reservada para el jueves 10:00."]},
+      {who:"WhatsApp · consulta entrante",value:600,ai:["Consulta inicial por WhatsApp.","Consulta de servicio. Responder rápido.","Respuesta inmediata con disponibilidad.","Cita de descubrimiento agendada y confirmada."]}
+    ]
+  };
+  var di=0,dLeads=0,dMoney=0,started=false;
+  var stages=Array.prototype.slice.call(document.querySelectorAll(".fstage"));
+  var reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  function runDemo(){
+    var sc=SC[lang][di];
+    stages.forEach(function(s){s.classList.remove("lit","done");var a=s.querySelector(".fai");if(a)a.textContent="";});
+    var step=0,STEP=reduce?400:1500;
+    (function light(){
+      if(step>0)stages[step-1].classList.add("done");
+      if(step<4){
+        var s=stages[step];s.classList.add("lit");
+        s.querySelector(".fai").textContent=sc.ai[step];
+        if(step===0){dLeads++;$("d-leads").textContent=dLeads;}
+        if(step===3){if(sc.value){dMoney+=sc.value;$("d-money").textContent=fmt(dMoney);}}
+        step++;setTimeout(light,STEP);
+      }else{stages[3].classList.add("done");setTimeout(function(){di=(di+1)%SC[lang].length;runDemo();},reduce?700:2600);}
+    })();
+  }
+
+  var demoEl=$("flow");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!started){started=true;runDemo();}});},{threshold:.3});
+    io.observe(demoEl);
+  }else{runDemo();}
+
+  // Init
+  applyLang(lang);
+  applyNiche(current);
+})();
+</script>
+</body>
+</html>
