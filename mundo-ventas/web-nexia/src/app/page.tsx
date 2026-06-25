@@ -10,7 +10,7 @@ const WHATSAPP = "5356659464";
 const WHATSAPP_MSG = "Hola NEXIA, quiero mi diagnóstico web gratis.";
 // Telegram: pon el @username de tu bot SIN la "@" (ej: "NexiaAsistenteBot").
 // Abre un chat 1-a-1 directo con tu bot. Si lo dejas vacío, el botón no aparece.
-const TELEGRAM_BOT = "";
+const TELEGRAM_BOT = "Jarvistrading2026_bot";
 
 // Qué recibe el cliente con el diagnóstico gratuito (concreta el gancho = más conversión)
 const DIAGNOSTICO_INCLUYE = [
