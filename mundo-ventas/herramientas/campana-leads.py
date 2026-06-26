@@ -24,6 +24,9 @@ try:
 except Exception:
     pass
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import llm
+
 HERE = os.path.dirname(__file__)
 OLLAMA = "http://localhost:11434/api/generate"
 CRM_URL = "http://127.0.0.1:8080/crm/cliente"
@@ -77,12 +80,7 @@ El email debe:
 Devuelve formato:
 ASUNTO: ...
 CUERPO: ..."""
-    body = json.dumps({"model": "qwen2.5:14b", "prompt": prompt, "stream": False}).encode()
-    try:
-        req = urllib.request.Request(OLLAMA, data=body, headers={"Content-Type": "application/json"})
-        return json.loads(urllib.request.urlopen(req, timeout=120).read())["response"].strip()
-    except Exception as e:
-        return f"(no se pudo generar: {e})"
+    return llm.generar(prompt, max_tokens=400)
 
 def guardar_crm(negocio, diagnostico, recs, ciudad, nicho):
     valor = f"${sum(s['min'] for s in recs)}-{sum(s['max'] for s in recs)}" if recs else "?"

@@ -49,3 +49,6 @@ trabajos-encontrados/
 leads-scrapeados/
 campanas/
 campana-estado.json
+mundo-ventas/herramientas/llm-config.json
+mundo-agencia/herramientas/telegram-bot-config.json
+mundo-agencia/herramientas/bot-leads-config.json
