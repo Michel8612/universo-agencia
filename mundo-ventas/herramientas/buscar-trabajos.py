@@ -17,9 +17,6 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import llm
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from llm import generar as llm_generar, backend_activo
-
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NEXIA-JobFinder/1.0"
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "trabajos-encontrados")
 FL_API = "https://www.freelancer.com/api/projects/0.1/projects/active/"
@@ -168,7 +165,7 @@ def main():
     print(f"  {len(trabajos)} trabajos relevantes (min ${args.min_budget} USD, max {args.max_competencia} pujas)\n")
 
     if args.propuestas:
-        print(f"  Generando propuestas con {backend_activo()} (puede tardar)...")
+        print("  Generando propuestas con IA (Groq/Ollama, puede tardar)...")
         for i, t in enumerate(trabajos):
             t["propuesta"] = generar_propuesta(t)
             print(f"    [{i+1}/{len(trabajos)}] {t['titulo'][:45]}")
