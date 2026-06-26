@@ -14,6 +14,8 @@ Uso:
 """
 import urllib.request, urllib.parse, json, time, re, csv, argparse, os, sys
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import llm
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from llm import generar as llm_generar, backend_activo
@@ -129,10 +131,7 @@ Other rules:
 - Professional, warm tone. No false promises, no filler. Do not invent specific past experience.
 - Return ONLY the proposal text, no headers, no "Proposal:" label.
 - REMEMBER: write everything in {idioma}."""
-    try:
-        return llm_generar(prompt, temperature=0.7)
-    except Exception as e:
-        return f"(no se pudo generar: {e})"
+    return llm.generar(prompt, max_tokens=350)
 
 def main():
     ap = argparse.ArgumentParser()

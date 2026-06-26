@@ -13,6 +13,8 @@ Uso:
 """
 import urllib.request, urllib.parse, json, time, re, csv, argparse, sys, os
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import llm
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from llm import generar as llm_generar
@@ -94,6 +96,28 @@ def http_get(url, timeout=40):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     return urllib.request.urlopen(req, timeout=timeout).read().decode("utf-8", "ignore")
 
+# Varios mirrors de Overpass: si uno da 406/timeout, prueba el siguiente (POST)
+# UA de navegador SOLO para Overpass (algunos mirrors dan 406 con UA no-navegador)
+UA_OVERPASS = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+OVERPASS_MIRRORS = [
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass-api.de/api/interpreter",
+    "https://lz4.overpass-api.de/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+]
+def overpass_query(query, timeout=120):
+    last = None
+    for m in OVERPASS_MIRRORS:
+        try:
+            req = urllib.request.Request(m, data=urllib.parse.urlencode({"data": query}).encode(),
+                headers={"User-Agent": UA_OVERPASS, "Content-Type": "application/x-www-form-urlencoded",
+                         "Accept": "*/*"})
+            return json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode("utf-8", "ignore"))
+        except Exception as e:
+            last = e
+            continue
+    raise last if last else RuntimeError("Overpass sin respuesta")
+
 def geocodificar(ciudad, pais="Spain"):
     """Devuelve (osm_type, osm_id, display_name) de la ciudad.
     Usa busqueda ESTRUCTURADA (city+country) -> devuelve el limite municipal (relation)."""
@@ -108,9 +132,9 @@ def geocodificar(ciudad, pais="Spain"):
     for tipo in ("relation", "way", "node"):
         for r in res:
             if r.get("osm_type") == tipo:
-                return r["osm_type"], int(r["osm_id"]), r["display_name"]
+                return r["osm_type"], int(r["osm_id"]), r["display_name"], r.get("boundingbox")
     r = res[0]
-    return r["osm_type"], int(r["osm_id"]), r["display_name"]
+    return r["osm_type"], int(r["osm_id"]), r["display_name"], r.get("boundingbox")
 
 def overpass_area_id(osm_type, osm_id):
     """Convierte osm relation/way en area id de Overpass."""
@@ -124,11 +148,10 @@ def buscar_negocios(nicho, ciudad, subnicho=None, limite=200, pais="Spain"):
     geo = geocodificar(ciudad, pais)
     if not geo:
         print(f"  [!] No se pudo geocodificar '{ciudad}'"); return [], ciudad
-    osm_type, osm_id, display = geo
+    osm_type, osm_id, display, bbox = geo
     print(f"  Zona: {display}")
     time.sleep(1.2)  # rate limit Nominatim
 
-    area_id = overpass_area_id(osm_type, osm_id)
     filtros = NICHOS.get(nicho)
     if not filtros:
         print(f"  [!] Nicho '{nicho}' no reconocido. Usa --listar-nichos"); return [], display
@@ -137,33 +160,31 @@ def buscar_negocios(nicho, ciudad, subnicho=None, limite=200, pais="Spain"):
     cuisine = SUBNICHOS_CUISINE.get(subnicho) if subnicho else None
     cuisine_filter = f'["cuisine"~"{cuisine}"]' if cuisine else ""
 
-    partes = []
-    for f in filtros:
-        if cuisine_filter:
-            f = f[:-1] if f.endswith("]") else f  # no aplica; ya esta cerrado
-        partes.append(f"{f}{cuisine_filter}(area.searchArea);")
-    cuerpo = "\n".join(partes)
-
-    if area_id:
-        query = f"""[out:json][timeout:60];
-area(id:{area_id})->.searchArea;
-({cuerpo});
-out center {limite};"""
+    # Usar BOUNDING BOX (mas ligero que area(id), evita timeouts en ciudades grandes)
+    # Nominatim bbox = [south, north, west, east]; Overpass filtro = (south,west,north,east)
+    if bbox and len(bbox) == 4:
+        s, n, w, e = bbox
+        bb = f"({s},{w},{n},{e})"
     else:
-        # fallback: alrededor de un punto (nodes/ciudades pequenas)
-        query = f"""[out:json][timeout:60];
-({cuerpo.replace('(area.searchArea)', '(around:8000,'+str(osm_id)+')')});
-out center {limite};"""
+        bb = f"(around:8000,{osm_id})"
 
-    url = "https://overpass-api.de/api/interpreter?data=" + urllib.parse.quote(query)
-    data = json.loads(http_get(url, timeout=90))
+    partes = [f"{f}{cuisine_filter}{bb};" for f in filtros]
+    cuerpo = "\n".join(partes)
+    query = f"[out:json][timeout:90];\n({cuerpo});\nout center {limite};"
+
+    data = overpass_query(query, timeout=120)
     return data.get("elements", []), display
 
 EMAIL_RE = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
 # dominios de tracking/ruido que NO son emails de contacto reales
 DOMINIOS_RUIDO = ("wixpress.com", "sentry.io", "sentry-next", "wix.com",
                   "example.com", "domain.com", "godaddy", "@2x", "wordpress.com",
-                  ".png", ".jpg", "schema.org", "w3.org")
+                  ".png", ".jpg", "schema.org", "w3.org",
+                  # plataformas/vendedores (no son el dueño del negocio)
+                  "menufy.com", "getbento.com", "bentobox", "atom.com", "squarespace",
+                  "godaddy.com", "shopify.com", "opentable.com", "resy.com", "toasttab",
+                  "doordash", "ubereats", "grubhub", "yelp.com", "facebook.com",
+                  "instagram.com", "googleusercontent", "wixsite", "weebly", "duda")
 
 def email_valido(e):
     el = e.lower()
@@ -179,7 +200,7 @@ def enriquecer_email(web):
         return ""
     if not web.startswith("http"):
         web = "https://" + web
-    for path in ["", "/contacto", "/contact", "/aviso-legal", "/about"]:
+    for path in ["", "/contact", "/contact-us", "/contacto", "/about", "/about-us", "/reservations", "/location"]:
         try:
             html = http_get(web.rstrip("/") + path, timeout=12)
             # mailto primero
@@ -206,7 +227,7 @@ Negocio: {negocio['nombre']} | Tipo: {negocio['categoria']} | Web: {negocio['web
 Devuelve SOLO JSON: {{"puntuacion": 1-10, "servicio": "...", "motivo": "una frase"}}
 Criterio: sin web = oportunidad alta para Landing+Chatbot. Con web antigua = automatizacion. Puntua mayor si falta presencia digital."""
     try:
-        resp = llm_generar(prompt, temperature=0.3)
+        resp = llm.generar(prompt, max_tokens=200)
         m = re.search(r'\{[\s\S]*\}', resp)
         if m:
             j = json.loads(m.group(0))

@@ -24,6 +24,9 @@ try:
 except Exception:
     pass
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import llm
+
 HERE = os.path.dirname(__file__)
 sys.path.insert(0, os.path.abspath(HERE))
 from llm import generar as llm_generar
@@ -79,10 +82,7 @@ El email debe:
 Devuelve formato:
 ASUNTO: ...
 CUERPO: ..."""
-    try:
-        return llm_generar(prompt, temperature=0.7)
-    except Exception as e:
-        return f"(no se pudo generar: {e})"
+    return llm.generar(prompt, max_tokens=400)
 
 def guardar_crm(negocio, diagnostico, recs, ciudad, nicho):
     valor = f"${sum(s['min'] for s in recs)}-{sum(s['max'] for s in recs)}" if recs else "?"

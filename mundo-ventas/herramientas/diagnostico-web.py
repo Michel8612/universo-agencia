@@ -11,9 +11,8 @@ Uso:
   python diagnostico-web.py --csv ../leads-scrapeados/restaurantes-Valencia-XXXX.csv --pitch
 """
 import urllib.request, urllib.parse, json, ssl, socket, time, re, os, argparse, csv, sys
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from llm import generar as llm_generar
+import llm
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 NEXIA-Diag/1.0"
 CAT_PATH = os.path.join(os.path.dirname(__file__), "..", "catalogo-servicios.json")
@@ -151,10 +150,7 @@ def generar_pitch(negocio, hallazgos, recs):
 Detectamos estos problemas reales en su web: {problemas}.
 Ofrecemos: {servicios}.
 El email debe: 1) mencionar 1-2 problemas concretos sin sonar agresivo, 2) explicar el beneficio de arreglarlo, 3) invitar a una llamada gratuita. NO inventes datos. Firma como "Equipo NEXIA"."""
-    try:
-        return llm_generar(prompt, temperature=0.7)
-    except Exception as e:
-        return f"(No se pudo generar pitch: {e})"
+    return llm.generar(prompt, max_tokens=400)
 
 def informe(h, catalogo, con_pitch=False, negocio=None):
     print(f"\n{'='*55}")
