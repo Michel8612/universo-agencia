@@ -15,9 +15,6 @@ import urllib.request, urllib.parse, json, time, re, csv, argparse, sys, os
 from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import llm
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from llm import generar as llm_generar
 from notificar import aviso_lead
 
 UA = "NEXIA-LeadScraper/1.0 (contacto: teamorionglobal@gmail.com)"

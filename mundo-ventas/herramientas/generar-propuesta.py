@@ -6,7 +6,7 @@ import argparse, json, datetime, os, sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from llm import generar as llm_generar
+import llm
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "propuestas"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -73,7 +73,7 @@ ESTRUCTURA OBLIGATORIA:
 Escribe la propuesta completa, profesional y convincente. Adapta el contenido al sector {sector}."""
 
     print(f"Generando propuesta para {empresa} ({sector}, {presupuesto}€)...")
-    contenido = llm_generar(prompt, temperature=0.7, max_tokens=1000, timeout=300)
+    contenido = llm.generar(prompt, max_tokens=1000)
 
     fecha = datetime.date.today().isoformat()
     nombre_archivo = f"propuesta_{empresa.lower().replace(' ','_').replace('/','_')}_{fecha}.md"
