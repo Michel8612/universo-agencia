@@ -1,0 +1,51 @@
+# NEXIA — Infra en Docker (reemplaza el arranque automático frágil de la PC)
+# Uso (en el servidor, con Docker ya funcionando):
+#   cd docker
+#   docker compose up -d            # arranca n8n (y lo que actives por perfiles)
+#   docker compose logs -f n8n      # ver logs
+#   docker compose down             # parar
+#
+# Perfiles opcionales:
+#   docker compose --profile ollama up -d     # añade Ollama local
+#
+# La API Flask y las campañas siguen en el host por ahora (usan rutas de Windows
+# y D:\Proyectos claude). n8n las alcanza vía host.docker.internal:8080.
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: nexia-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=America/New_York
+      - TZ=America/New_York
+      - N8N_RUNNERS_ENABLED=true
+      # Permite a n8n llamar a la API Flask del host:
+      - NEXIA_API=http://host.docker.internal:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      # Carpeta compartida para importar/exportar workflows del repo:
+      - ../mundo-agencia/api:/workflows:ro
+
+  # ─── Opcional: Ollama local en Docker (perfil "ollama") ───
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nexia-ollama
+    restart: unless-stopped
+    profiles: ["ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  n8n_data:
+  ollama_data:
