@@ -1,0 +1,21 @@
+# NEXIA — n8n en Docker (estable, auto-reinicio)
+# Arrancar:   docker compose up -d
+# Ver logs:   docker compose logs -f
+# Parar:      docker compose down   (los datos se conservan en C:\Users\Romer\.n8n)
+#
+# Monta tu carpeta .n8n actual -> conserva TODOS tus workflows y la clave de cifrado.
+services:
+  n8n:
+    image: n8nio/n8n:2.22.6
+    container_name: nexia-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_RUNNERS_ENABLED=false
+      - N8N_SECURE_COOKIE=false
+      - N8N_HOST=127.0.0.1
+      - N8N_PORT=5678
+      - GENERIC_TIMEZONE=America/Havana
+    volumes:
+      - "C:/Users/Romer/.n8n:/home/node/.n8n"
