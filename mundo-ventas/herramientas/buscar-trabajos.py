@@ -34,17 +34,27 @@ USD = {"USD":1, "EUR":1.08, "GBP":1.27, "AUD":0.66, "CAD":0.73, "NZD":0.61,
        "INR":0.012, "PKR":0.0036, "PHP":0.017, "BRL":0.18, "MXN":0.05,
        "ZAR":0.055, "AED":0.27, "SGD":0.74}
 
-# Relevancia: el trabajo debe tocar algún dominio de NEXIA...
-INCLUIR = ["web", "site", "página", "pagina", "landing", "wordpress", "shopify",
-    "woocommerce", "chatbot", "bot", " ai", "a.i", "automat", "scrap", "api",
-    "python", "react", "next.js", "nextjs", "node", "javascript", "php", "laravel",
-    "seo", "ecommerce", "e-commerce", "app", "dashboard", "integration", "integración",
-    "n8n", "zapier", "make.com", "database", "backend", "frontend", "logo", "brand",
-    "video", "reel", "copywrit", "content", "email marketing", "social media", "crm"]
-# ...y NO ser de estas categorías que no entregamos
+# Relevancia por puntuación: el núcleo FUERTE de NEXIA pesa +2, lo MEDIO +1.
+# Un trabajo entra si suma >= 2 (un match fuerte, o dos medios).
+NUCLEO_FUERTE = ["website", "web develop", "landing page", "wordpress", "shopify",
+    "woocommerce", "chatbot", "chat bot", "automation", "automatización", "scraping",
+    "web scrap", "api integration", "next.js", "nextjs", "react", "node.js", "laravel",
+    "n8n", "zapier", "make.com", "dashboard", "crm", "ai assistant", "ai agent",
+    "openai", "chatgpt", "llm", "django", "fastapi", "flask"]
+NUCLEO_MEDIO = ["seo", "ecommerce", "e-commerce", "web app", "web design", "python",
+    "javascript", "php", "database", "backend", "frontend", "full stack", "fullstack",
+    "integration", "integración", "email marketing", "landing", "saas", "supabase",
+    "automatic", "bot ", "rest api"]
+# Categorías que NO entregamos (cualquiera de estas descarta el trabajo)
 EXCLUIR = ["telecall", "cold call", "commission", "sales rep", "lead generator",
     "resume", "cv writ", "data entry", "voice over", "voiceover", "tee design",
-    "t-shirt", "accountant", "legal writ", "translat", "transcription"]
+    "t-shirt", "accountant", "legal writ", "translat", "transcription",
+    # ruido detectado: data-labeling, edición creativa, hardware/embedded, juegos
+    "annotation", "labeling", "labelling", "data label", "photo", "image edit",
+    "retouch", "restoration", "vhs", "video edit", "after effects", "premiere",
+    "3d", "render", "unity", "unreal", "game develop", "embedded", "firmware",
+    "fpga", "chipwhisperer", "side-channel", "side channel", "pcb", "circuit",
+    "autocad", "solidworks", "matlab", "illustrat", "photoshop"]
 
 def get(url, timeout=25, intentos=3):
     last = None
@@ -74,11 +84,17 @@ def detectar_idioma(texto):
             mejor, score = idioma, s
     return mejor
 
-def es_relevante(t):
+def relevancia(t):
+    """Devuelve una puntuación de fit con NEXIA. <=0 = descartar."""
     texto = (t["titulo"] + " " + t["descripcion"] + " " + " ".join(t["skills"])).lower()
     if any(x in texto for x in EXCLUIR):
-        return False
-    return any(x in texto for x in INCLUIR)
+        return 0
+    score = 2 * sum(1 for x in NUCLEO_FUERTE if x in texto)
+    score += sum(1 for x in NUCLEO_MEDIO if x in texto)
+    return score
+
+def es_relevante(t):
+    return relevancia(t) >= 2
 
 def buscar(query, limite=20):
     params = urllib.parse.urlencode({
@@ -153,14 +169,16 @@ def main():
                 continue
             if t["pujas"] > args.max_competencia:
                 continue
-            if not es_relevante(t):
+            sc = relevancia(t)
+            if sc < 2:
                 continue
+            t["score"] = sc
             vistos.add(t["id"])
             trabajos.append(t)
         time.sleep(0.4)
 
-    # ordenar: menos competencia primero, luego mayor presupuesto (en USD)
-    trabajos.sort(key=lambda x: (x["pujas"], -x["usd_min"]))
+    # ordenar: mayor fit con NEXIA, luego menos competencia, luego mayor presupuesto
+    trabajos.sort(key=lambda x: (-x["score"], x["pujas"], -x["usd_min"]))
     trabajos = trabajos[:args.top]
     print(f"  {len(trabajos)} trabajos relevantes (min ${args.min_budget} USD, max {args.max_competencia} pujas)\n")
 
@@ -200,7 +218,7 @@ def main():
     # Resumen en consola
     print(f"\n=== TOP {min(8, len(trabajos))} oportunidades ===")
     for t in trabajos[:8]:
-        print(f"  ~${t['usd_min']}+ USD ({t['min']}-{t['max']} {t['moneda']}) | {t['pujas']} pujas | {t['titulo'][:48]}")
+        print(f"  fit {t['score']:>2} | ~${t['usd_min']}+ USD ({t['min']}-{t['max']} {t['moneda']}) | {t['pujas']} pujas | {t['titulo'][:48]}")
 
 if __name__ == "__main__":
     main()
