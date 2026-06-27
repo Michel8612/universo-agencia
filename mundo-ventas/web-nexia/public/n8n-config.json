@@ -1,0 +1,4 @@
+{
+  "webhook": "",
+  "_nota": "Lo reescribe CLOUDFLARE-TUNNEL.ps1 con la URL del tunel activo (https://XXXX.trycloudflare.com/webhook/lead-nexia) y hace push -> Netlify redeploya. Si webhook esta vacio, el formulario usa solo formsubmit.co."
+}

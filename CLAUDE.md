@@ -92,3 +92,8 @@ mundo-seo/              → posicionamiento orgánico
 mundo-ads/              → publicidad de pago
 mundo-ecommerce/        → tiendas online
 ```
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->

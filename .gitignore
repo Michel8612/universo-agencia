@@ -53,3 +53,14 @@ campana-usa-estado.json
 mundo-ventas/herramientas/llm-config.json
 mundo-agencia/herramientas/telegram-bot-config.json
 mundo-agencia/herramientas/bot-leads-config.json
+
+# Secretos hardcodeados / WIP con credenciales (NO subir — repo público)
+mundo-dev-clientes/nexia-backend/
+ACTIVAR-LEAD-WORKFLOW.bat
+
+# Estado local (no versionar)
+.netlify/
+_archivo-cowork/
+*.pid
+tunnel-url.txt
+tunnel-output*.log

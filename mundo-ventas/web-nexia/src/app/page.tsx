@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from "react";
 // ── CONFIG ──────────────────────────────────────────────────
 const EMAIL_DESTINO = "teamorionglobal@gmail.com";
 const PLAZAS_FUNDADOR = 3;
+// Funnel n8n: la URL del webhook se lee en runtime desde /n8n-config.json.
+// El script CLOUDFLARE-TUNNEL.ps1 reescribe ese archivo con la URL del túnel
+// activo y hace push → Netlify redeploya solo. Si está vacío, el formulario
+// sigue funcionando vía formsubmit.co (el lead nunca se pierde).
+const N8N_CONFIG_URL = "/n8n-config.json";
 // WhatsApp: pon tu número en formato internacional SIN "+" ni espacios (ej: "34600112233").
 // Si lo dejas vacío, el botón flotante de WhatsApp simplemente no aparece.
 const WHATSAPP = "5356659464";
@@ -154,13 +159,39 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 function ContactForm() {
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", web: "", mensaje: "" });
   const [estado, setEstado] = useState<"idle" | "enviando" | "ok" | "error">("idle");
+  const [n8nWebhook, setN8nWebhook] = useState("");
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+
+  // Carga la URL del webhook del funnel (si el túnel está activo) en runtime.
+  useEffect(() => {
+    fetch(N8N_CONFIG_URL, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((cfg) => { if (cfg?.webhook) setN8nWebhook(cfg.webhook); })
+      .catch(() => {});
+  }, []);
+
+  // Dispara el funnel n8n (CRM + IA + emails). Best-effort: si falla o el túnel
+  // está caído, no rompe nada — formsubmit.co garantiza la entrega del lead.
+  const dispararFunnel = (datos: typeof form) => {
+    if (!n8nWebhook) return;
+    fetch(n8nWebhook, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        Nombre: datos.nombre, Email: datos.email, Empresa: datos.empresa || "—",
+        Web: datos.web || "—", Sector: "—", Presupuesto: "—",
+        Mensaje: datos.mensaje || "—", Fuente: "web-nexia",
+      }),
+    }).catch(() => {});
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.nombre || !form.email) return;
     setEstado("enviando");
+    dispararFunnel(form); // funnel n8n en paralelo (no bloquea)
     try {
       const res = await fetch(`https://formsubmit.co/ajax/${EMAIL_DESTINO}`, {
         method: "POST",
