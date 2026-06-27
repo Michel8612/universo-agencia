@@ -28,8 +28,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import llm
 
 HERE = os.path.dirname(__file__)
-sys.path.insert(0, os.path.abspath(HERE))
-from llm import generar as llm_generar
 
 CRM_URL = "http://127.0.0.1:8080/crm/cliente"
 STATE_PATH = os.path.join(HERE, "..", "campana-estado.json")

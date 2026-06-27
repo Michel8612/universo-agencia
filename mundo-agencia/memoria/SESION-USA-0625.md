@@ -13,6 +13,15 @@
 - **Vendemos a USA primero** (luego Europa), por huso horario y mercado.
 - Continuidad PC↔nube↔móvil = **Git** (no MCP). Regla: leer estado-fase al empezar, commit+push al terminar.
 
+## Actualización — sesión nube 2026-06-26
+- ✅ **Repo reconciliado**: el merge dejó imports rotos en las herramientas
+  (`buscar-trabajos` importaba `backend_activo`, ya inexistente; `generar-propuesta`
+  llamaba con kwargs viejos). Alineadas las 5 a `llm.generar(prompt, max_tokens=...)`.
+  Verificado que importan limpio. (`llm-config.json` confirmado fuera de git.)
+- ✅ **Outreach Miami v2** listo: `mundo-ventas/outreach/miami-outreach-v2.md`. OJO: de los
+  6, solo 3 emails son del negocio real (Giardino, Fritz & Franz, Joey's). Los otros 3 van
+  a plataformas (menufy/getbento/atom) → NO enviar. Mensajes reescritos + opt-out CAN-SPAM.
+
 ## Pendiente / próximo
 - Enviar los 3 emails de Miami. Cazar más ciudades USA (Orlando, Tampa) para juntar 20-30 leads con email.
 - Reconciliar repo: origin/main tiene trabajo de la sesión nube (WhatsApp btn +53 5665 9464, Next.js 14.2.35 seguridad, MCP empleos, perfiles freelance, Spec Kit). Su llm.py NO tiene el fix User-Agent (daría 403).
