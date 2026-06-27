@@ -1,0 +1,85 @@
+<!doctype html><html lang=es><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>NEXIA · Universo</title>
+<style>
+*{box-sizing:border-box;margin:0;font-family:system-ui,Segoe UI,sans-serif}
+body{background:radial-gradient(1200px 600px at 80% -10%,#15224a 0%,#08080c 55%);color:#e5e7eb;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:22px}
+h1{font-size:24px;font-weight:800}.b{background:linear-gradient(90deg,#60a5fa,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.muted{color:#7681a0;font-size:12px}
+.bar{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px;margin:16px 0}
+.planet{background:#0d1426cc;border:1px solid #1e293b;border-radius:14px;padding:16px;transition:.2s}
+.planet:hover{border-color:#3b82f6;transform:translateY(-3px)}
+.planet .ico{font-size:26px}.planet h3{font-size:15px;margin:6px 0 3px}.planet p{font-size:11.5px;color:#94a3b8;line-height:1.5}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;margin-top:8px}
+.on{background:#064e3b;color:#6ee7b7}.soon{background:#1e293b;color:#94a3b8}
+.card{background:#0d1426cc;border:1px solid #1e293b;border-radius:14px;padding:18px;margin:14px 0}
+input,select,button{padding:9px;border-radius:8px;border:1px solid #334155;background:#0a1120;color:#e5e7eb;font-size:13px}
+button{background:#2563eb;border:0;cursor:pointer;font-weight:600}button:hover{background:#3b82f6}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+th,td{text-align:left;padding:7px;border-bottom:1px solid #1e293b}th{color:#7681a0}
+pre{background:#0a1120;border:1px solid #1e293b;border-radius:8px;padding:10px;font-size:11.5px;max-height:200px;overflow:auto;white-space:pre-wrap}
+.h{display:flex;justify-content:space-between;align-items:center}
+.s{font-size:11px;padding:5px 10px}
+</style></head><body><div class=wrap>
+
+<div class=h>
+  <div><h1>NEX<span class=b>IA</span> · Universo</h1><div class=muted>Centro de control de la agencia de IA · todo local</div></div>
+  <div id=svc class=bar></div>
+</div>
+
+<h3 style=margin-top:18px;font-size:14px;color:#94a3b8>🪐 Los planetas</h3>
+<div class=grid id=planets></div>
+
+<div class=card>
+  <div class=h><b>🎯 Cazar leads (Mundo Ventas)</b></div>
+  <div class=bar style=margin-top:10px>
+    <select id=nicho></select>
+    <input id=ciudad value=Miami placeholder=Ciudad>
+    <input id=pais value=USA style=max-width:80px>
+    <button onclick=cazar()>Cazar</button>
+    <span id=cmsg class=muted></span>
+  </div>
+</div>
+
+<div class=card>
+  <div class=h><b>📋 CRM — Leads</b><button class=s onclick=leads()>Refrescar</button></div>
+  <span id=nl class=muted></span>
+  <table><thead><tr><th>Nombre</th><th>Contacto</th><th>Estado</th></tr></thead><tbody id=tl></tbody></table>
+</div>
+
+<div class=card>
+  <div class=h><b>🛰️ Log de la última acción</b><button class=s onclick=vlog()>Refrescar</button></div>
+  <pre id=log>—</pre>
+</div>
+
+</div>
+<script>
+const NICHOS=["restaurantes","cafeterias","bares","hoteles","peluquerias","belleza","spa","gimnasios","dentistas","clinicas","fisioterapia","abogados","inmobiliarias","talleres","fontaneros","fotografos","veterinarios","opticas"];
+const PLANETAS=[
+ {i:"💼",n:"Ventas",d:"CRM, caza de leads, campañas y outreach",e:1},
+ {i:"🤖",n:"Chatbots",d:"Bots Telegram (mando + leads) 24/7 en USA",e:1},
+ {i:"⚙️",n:"Dev Clientes",d:"Apps, sistemas y APIs a medida",e:1},
+ {i:"📱",n:"Social Media",d:"Publicación y contenido automático",e:0},
+ {i:"🎬",n:"Multimedia",d:"Vídeo, imagen y audio con IA",e:0},
+ {i:"✍️",n:"Contenido",d:"Generación de contenido en masa",e:0},
+ {i:"🔍",n:"SEO",d:"Posicionamiento orgánico",e:0},
+ {i:"📣",n:"Ads",d:"Publicidad de pago",e:0},
+ {i:"🛒",n:"E-commerce",d:"Tiendas online",e:0},
+ {i:"🔒",n:"Ciberseguridad",d:"Auditorías y pentesting",e:0},
+ {i:"🏭",n:"SaaS Factory",d:"Productos SaaS propios (Taíno Labs)",e:0},
+ {i:"🧠",n:"Agencia",d:"CRM, propuestas, facturación, orquestación",e:1},
+];
+const $=s=>document.querySelector(s);
+async function j(u,o){return (await fetch(u,o)).json()}
+function planets(){$("#planets").innerHTML=PLANETAS.map(p=>`<div class=planet><div class=ico>${p.i}</div><h3>${p.n}</h3><p>${p.d}</p><span class="tag ${p.e?'on':'soon'}">${p.e?'operativo':'próximamente'}</span></div>`).join("")}
+async function svc(){const s=await j("/api/status");$("#svc").innerHTML=Object.entries(s).map(([k,v])=>`<span><span class=dot style=background:${v?'#22c55e':'#ef4444'}></span>${k}</span>`).join("")}
+async function leads(){let d=[];try{d=await j("/api/leads")}catch{}; $("#nl").textContent=`(${d.length})`;
+ $("#tl").innerHTML=d.slice(0,40).map(l=>`<tr><td>${l.nombre||""}</td><td>${l.contacto||""}</td><td>${l.estado||""}</td></tr>`).join("")}
+async function vlog(){const d=await j("/api/log");$("#log").textContent=d.log}
+async function cazar(){$("#cmsg").textContent="Lanzando...";await j("/api/cazar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nicho:$("#nicho").value,ciudad:$("#ciudad").value,pais:$("#pais").value})});$("#cmsg").textContent="Caza lanzada — mira el log.";setTimeout(vlog,3000)}
+$("#nicho").innerHTML=NICHOS.map(n=>`<option>${n}</option>`).join("");
+planets();svc();leads();vlog();setInterval(svc,15000);
+</script></body></html>
