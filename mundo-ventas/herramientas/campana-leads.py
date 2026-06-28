@@ -66,17 +66,19 @@ def guardar_estado(s):
 def email_primer_contacto(negocio, diagnostico, recs):
     problemas = "; ".join(diagnostico["hallazgos"][:3]) or "mejoras de presencia digital"
     servicios = ", ".join(f"{s['nombre']} ({diag.fmt_precio(s)})" for s in recs[:3]) or "desarrollo web y automatización"
-    prompt = f"""Eres comercial de NEXIA (agencia de IA, web y automatización). Escribe un email FRÍO corto (máx 110 palabras), en español, profesional y nada agresivo, para el negocio "{negocio['nombre']}".
+    prompt = f"""Eres comercial sénior de NEXIA (agencia de IA, web y automatización). Escribe un email EN FRÍO corto (máx 120 palabras), en español, PERSUASIVO pero profesional y cercano — nunca agresivo ni spam, para el negocio "{negocio['nombre']}".
 
 Detectamos en su web: {problemas}.
 Servicios que encajan: {servicios}.
 
-El email debe:
-1. Asunto corto y concreto (incluye el nombre del negocio).
-2. Mencionar 1-2 hallazgos reales de SU web (sin sonar a ataque).
-3. Ofrecer un diagnóstico web gratuito completo.
-4. Cerrar invitando a responder. Firmar como "Equipo NEXIA".
-5. Acabar con una línea: "Si no te interesa, responde BAJA y no te volvemos a escribir."
+Reglas de persuasión:
+1. Asunto: concreto y orientado a beneficio, incluye el nombre del negocio (enfócalo en conseguir más clientes desde su web). Sin clickbait ni mayúsculas.
+2. Abre con UN problema concreto de SU web y su coste real en una frase cercana (clientes que se pierden, reservas que no llegan, confianza que se cae).
+3. Promete UN resultado claro, no una lista de funciones (más consultas, web más rápida, reservas 24/7).
+4. Prueba social ligera: este mes estamos seleccionando unos pocos negocios para una auditoría web gratuita.
+5. UNA sola llamada a la acción: responder para recibir la auditoría gratis y sin compromiso en 24h.
+6. Fácil de leer: frases cortas, saltos de línea, sin tecnicismos. Firma como "Equipo NEXIA".
+7. Acaba con: "Si no te interesa, responde BAJA y no te volvemos a escribir."
 Devuelve formato:
 ASUNTO: ...
 CUERPO: ..."""

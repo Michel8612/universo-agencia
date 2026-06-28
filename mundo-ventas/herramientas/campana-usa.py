@@ -127,17 +127,19 @@ def guardar_estado(s):
 def email_primer_contacto(negocio, d, recs):
     problemas = "; ".join(d["hallazgos"][:3]) or "improving their online presence"
     servicios = ", ".join(f"{s['nombre']} ({diag.fmt_precio(s)})" for s in recs[:3]) or "web development and automation"
-    prompt = f"""You are a sales rep for NEXIA (AI, web development and automation agency). Write a SHORT cold email (max 110 words) in ENGLISH, professional and not pushy, for the US business "{negocio['nombre']}".
+    prompt = f"""You are a senior sales rep for NEXIA (AI, web development and automation agency). Write a SHORT, PERSUASIVE cold email (max 120 words) in ENGLISH for the US business "{negocio['nombre']}". Professional, warm and confident — never pushy or spammy.
 
 We detected on their website: {problemas}.
 Services that fit: {servicios}.
 
-Rules:
-1. Short, concrete subject line (include the business name).
-2. Mention 1-2 real findings from THEIR site (not aggressive).
-3. Offer a FREE complete website audit within 24h.
-4. Close inviting a reply. Sign as "NEXIA Team".
-5. End with: "If this isn't for you, reply STOP and we won't email again."
+Persuasion rules:
+1. Subject: specific and benefit-driven, include the business name (focus on getting more customers from their site). No clickbait, no ALL CAPS.
+2. Open with ONE concrete issue from THEIR site and its real cost in one relatable line (lost customers, missed bookings, lost trust).
+3. Promise ONE clear outcome, not a feature list (more enquiries, a faster site, 24/7 booking).
+4. Light credibility: we're selecting a few local businesses this month for a free website audit.
+5. ONE clear call to action: reply to get a free, no-obligation audit within 24h.
+6. Skimmable: short sentences, line breaks, no jargon. Sign as "NEXIA Team".
+7. End with: "If this isn't for you, reply STOP and we won't email again."
 Return format:
 SUBJECT: ...
 BODY: ..."""
