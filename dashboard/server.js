@@ -86,6 +86,44 @@ except Exception as e:
     });
     return;
   }
+  if (u.pathname === "/api/campana" && req.method === "POST") {
+    lanzar("campana-leads.py", ["--combos", "6", "--por-combo", "3"]);
+    return send(200, JSON.stringify({ ok: true }));
+  }
+  if (u.pathname === "/api/buscar" && req.method === "POST") {
+    lanzar("buscar-trabajos.py", ["--min-budget", "150", "--max-competencia", "40", "--top", "15"]);
+    return send(200, JSON.stringify({ ok: true }));
+  }
+  if (u.pathname === "/api/enviar" && req.method === "POST") {
+    let b = ""; req.on("data", (c) => (b += c));
+    req.on("end", () => {
+      let d = {}; try { d = JSON.parse(b); } catch {}
+      lanzar("enviar-campana.py", d.real ? ["--enviar"] : []);
+      send(200, JSON.stringify({ ok: true, real: !!d.real }));
+    });
+    return;
+  }
+  if (u.pathname === "/api/correos") {
+    const cdir = path.join(BASE, "mundo-ventas", "campanas");
+    const code = [
+      "import os,glob,json,re",
+      `cdir=r"${cdir}"`,
+      "sent=0",
+      "try:",
+      ' s=json.load(open(os.path.join(cdir,"enviados.json"),encoding="utf-8")); sent=len(set(s.get("emails",[])))',
+      "except Exception: pass",
+      'files=sorted(glob.glob(os.path.join(cdir,"campana-*.md")))',
+      'con=0; arch=""',
+      "if files:",
+      " arch=os.path.basename(files[-1]); t=open(files[-1],encoding='utf-8').read()",
+      " con=len(set(re.findall(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}',t)))",
+      'print(json.dumps({"enviados":sent,"con_email":con,"archivo":arch}))',
+    ].join("\n");
+    const p = spawn(PY, ["-c", code]);
+    let out = ""; p.stdout.on("data", (c) => (out += c));
+    p.on("close", () => send(200, out.trim() || "{}"));
+    return;
+  }
   send(404, JSON.stringify({ error: "no encontrado" }));
 });
 

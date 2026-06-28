@@ -33,10 +33,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CAMPANAS_DIR = os.path.join(HERE, "..", "campanas")
 SENT_LOG = os.path.join(CAMPANAS_DIR, "enviados.json")
 
-# Emails-placeholder de plantillas que NO son reales (no enviar)
+# Emails-placeholder de plantillas / plataformas que NO son del negocio (no enviar)
 EMAIL_BASURA = ("mysite.com", "example.com", "example.org", "domain.com",
                 "email.com", "yourdomain", "wixpress.com", "sentry.io",
-                "tudominio", "tu-email", "test.com")
+                "tudominio", "tu-email", "test.com",
+                # plataformas de pedidos/web (no son el negocio real)
+                "menufy.com", "getbento.com", "atom.com", "toasttab.com",
+                "doordash.com", "ubereats.com", "grubhub.com", "squareup.com")
 
 
 def cargar_env():
@@ -91,6 +94,28 @@ def parsear_campana(path):
     return leads
 
 
+def parsear_json(path):
+    """Lee un JSON tipo miami-emails.json: [{negocio,email,web,mensaje}]."""
+    data = json.load(open(path, encoding="utf-8"))
+    leads = []
+    for it in data:
+        email = (it.get("email") or "").strip()
+        if not email_valido(email):
+            continue
+        msg = it.get("mensaje", "") or ""
+        # separar "Subject: ..." del cuerpo si viene incrustado
+        m = re.match(r"\s*Subject:\s*(.+)", msg)
+        if m:
+            asunto = m.group(1).strip()
+            cuerpo = msg[m.end():].strip()
+        else:
+            asunto = f"NEXIA — {it.get('negocio','')}".strip(" —")
+            cuerpo = msg.strip()
+        leads.append({"nombre": it.get("negocio", ""), "email": email,
+                      "asunto": asunto, "cuerpo": cuerpo})
+    return leads
+
+
 def cargar_enviados():
     if os.path.exists(SENT_LOG):
         try:
@@ -135,6 +160,7 @@ def enviar_smtp(server_cfg, msg_from, to, asunto, cuerpo):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--archivo", help="ruta a campana-*.md (por defecto, la más reciente)")
+    ap.add_argument("--json", help="ruta a un JSON tipo miami-emails.json [{negocio,email,web,mensaje}]")
     ap.add_argument("--max", type=int, default=25, help="tope de envíos en esta tanda (20-40 recomendado)")
     ap.add_argument("--delay-min", type=int, default=35, help="segundos mínimos entre envíos")
     ap.add_argument("--delay-max", type=int, default=90, help="segundos máximos entre envíos")
@@ -145,12 +171,18 @@ def main():
         print(f"⚠ {args.max} supera lo recomendado (40/día). Gmail crudo puede suspenderte. Bájalo.")
 
     cargar_env()
-    path = args.archivo or archivo_mas_reciente()
-    if not path or not os.path.exists(path):
-        print("[x] No encuentro ningún campana-*.md. Corre antes campana-leads.py.")
-        sys.exit(1)
-
-    leads = parsear_campana(path)
+    if args.json:
+        path = args.json
+        if not os.path.exists(path):
+            print(f"[x] No existe el JSON: {path}")
+            sys.exit(1)
+        leads = parsear_json(path)
+    else:
+        path = args.archivo or archivo_mas_reciente()
+        if not path or not os.path.exists(path):
+            print("[x] No encuentro ningún campana-*.md. Corre antes campana-leads.py.")
+            sys.exit(1)
+        leads = parsear_campana(path)
     enviados = cargar_enviados()
     ya = set(e.lower() for e in enviados["emails"])
     pendientes = [l for l in leads if l["email"].lower() not in ya]

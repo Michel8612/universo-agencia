@@ -45,6 +45,17 @@ pre{background:#0a1120;border:1px solid #1e293b;border-radius:8px;padding:10px;f
 </div>
 
 <div class=card>
+  <div class=h><b>📨 Campañas y envío</b><span id=cstats class=muted></span></div>
+  <div class=bar style=margin-top:10px>
+    <button onclick=campana()>Campaña ES (6×3)</button>
+    <button onclick=buscar()>Buscar freelance</button>
+    <button onclick="enviar(false)" style=background:#334155>Simular envío</button>
+    <button onclick="enviar(true)" style=background:#b45309>Enviar tanda REAL</button>
+    <span id=emsg class=muted></span>
+  </div>
+</div>
+
+<div class=card>
   <div class=h><b>📋 CRM — Leads</b><button class=s onclick=leads()>Refrescar</button></div>
   <span id=nl class=muted></span>
   <table><thead><tr><th>Nombre</th><th>Contacto</th><th>Estado</th></tr></thead><tbody id=tl></tbody></table>
@@ -80,6 +91,10 @@ async function leads(){let d=[];try{d=await j("/api/leads")}catch{}; $("#nl").te
  $("#tl").innerHTML=d.slice(0,40).map(l=>`<tr><td>${l.nombre||""}</td><td>${l.contacto||""}</td><td>${l.estado||""}</td></tr>`).join("")}
 async function vlog(){const d=await j("/api/log");$("#log").textContent=d.log}
 async function cazar(){$("#cmsg").textContent="Lanzando...";await j("/api/cazar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nicho:$("#nicho").value,ciudad:$("#ciudad").value,pais:$("#pais").value})});$("#cmsg").textContent="Caza lanzada — mira el log.";setTimeout(vlog,3000)}
+async function correos(){try{const d=await j("/api/correos");$("#cstats").textContent=`✅ enviados: ${d.enviados} · 📧 emails en última campaña (${d.archivo||'-'}): ${d.con_email}`}catch{}}
+async function campana(){$("#emsg").textContent="Lanzando campaña ES...";await j("/api/campana",{method:"POST"});$("#emsg").textContent="Campaña lanzada — mira el log.";setTimeout(vlog,3000)}
+async function buscar(){$("#emsg").textContent="Buscando trabajos...";await j("/api/buscar",{method:"POST"});$("#emsg").textContent="Búsqueda lanzada — mira el log.";setTimeout(vlog,3000)}
+async function enviar(real){if(real&&!confirm("¿Enviar emails REALES a los leads de la última campaña?"))return;$("#emsg").textContent=real?"Enviando REAL...":"Simulando...";await j("/api/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({real})});$("#emsg").textContent=real?"Tanda enviada — mira el log.":"Simulación hecha — mira el log.";setTimeout(()=>{vlog();correos()},4000)}
 $("#nicho").innerHTML=NICHOS.map(n=>`<option>${n}</option>`).join("");
-planets();svc();leads();vlog();setInterval(svc,15000);
+planets();svc();leads();vlog();correos();setInterval(svc,15000);
 </script></body></html>
