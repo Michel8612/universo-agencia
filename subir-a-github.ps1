@@ -3,9 +3,20 @@
 # Ejecutar UNA sola vez desde PowerShell como Administrador
 # ============================================================
 
-$TOKEN = "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"
-$REPO_NAME = "universo-agencia"
 $PROYECTO = "D:\Proyectos claude"
+$REPO_NAME = "universo-agencia"
+
+# Token fuera del código: se lee de .env (gitignored)
+$TOKEN = ""
+if (Test-Path "$PROYECTO\.env") {
+    foreach ($line in Get-Content "$PROYECTO\.env") {
+        if ($line -match '^\s*GITHUB_TOKEN\s*=\s*(.+)\s*$') { $TOKEN = $matches[1].Trim().Trim('"').Trim("'") }
+    }
+}
+if (-not $TOKEN) {
+    Write-Host "[x] Falta GITHUB_TOKEN en $PROYECTO\.env" -ForegroundColor Red
+    exit 1
+}
 
 Write-Host "`n[1/4] Creando repositorio privado en GitHub..." -ForegroundColor Cyan
 

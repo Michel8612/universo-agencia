@@ -1,9 +1,25 @@
 #!/usr/bin/env python3
 """Importa los workflows JSON a n8n via API."""
 import json
+import os
+import sys
 import urllib.request
 
-KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ODY5YTRjNS01NDAxLTRmMTUtOGE3Yy01NTdiMThjNjQwN2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMmNkYzBmMTktYzI1My00OWUwLWExN2QtMWRlMzM2ZWE1OWRkIiwiaWF0IjoxNzgxODUzMTkyfQ.G3qbvysA5veWZyllFdCMLvJyQAKBOysMJqAf8Csw0Oo"
+# API key fuera del código: se lee de D:\Proyectos claude\.env (gitignored)
+def _cargar_env():
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    envp = os.path.join(root, ".env")
+    if os.path.exists(envp):
+        for line in open(envp, encoding="utf-8"):
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+_cargar_env()
+KEY = os.environ.get("N8N_API_KEY", "")
+if not KEY:
+    print("[x] Falta N8N_API_KEY en .env (D:\\Proyectos claude\\.env)")
+    sys.exit(1)
 BASE = "http://localhost:5678/api/v1"
 
 WORKFLOWS = [
