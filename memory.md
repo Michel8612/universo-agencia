@@ -14,6 +14,12 @@ mapear a servicios con precio → pitch**. Vendemos webs, chatbots y automatizac
   scraper y campañas**. IP USA = sin bloqueos OSM. **NO corre n8n.**
 - **n8n corre SOLO en la PC local** (localhost:5678), no en USA. El funnel y el túnel
   Cloudflare (`CLOUDFLARE-TUNNEL.ps1`) trabajan contra la PC local.
+- **USA `C:\nexia` ya es repo git** (2026-06-28): se migró de copia manual a clon
+  (`git reset --hard origin/main`, conserva configs/`agencia.db` no rastreados).
+  A futuro: `git pull` en USA sincroniza. Ya tiene `campana-usa.py`. OpenClaw usa Groq.
+- ⚠️ **Conflicto de puerto en USA**: el 8080 lo ocupa otro proyecto (FleetHub-Laravel),
+  así que el Flask CRM de NEXIA NO corre allí → las campañas USA aún no guardan leads.
+  Pendiente: CRM_URL configurable + arrancar Flask NEXIA en puerto libre (p.ej. 8090).
 - **Bots Telegram 24/7** (en USA): @Rebeeka_bot (mando) + @Jarvistrading2026_bot (leads).
 - **IA**: Groq (nube, gratis, Llama 3.3 70B) vía `herramientas/llm.py` + `llm-config.json`
   (NO en git). Fallback Ollama. Fix Cloudflare 403 = User-Agent de navegador.
